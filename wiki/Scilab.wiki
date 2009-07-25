@@ -1,3 +1,4 @@
+#labels Featured
  You can use JMathPlot in Scilab to plot arrays (same way that plot2d or plot3d). You need to use jplot.sci script which provides an interface to CLI call with similar syntax.
 {{{
 Usage : jplot2d(data1,options,data2,options) or jplot3d(data1,options,data2,options) [data] is an array of numbers, [options] are related to previous [data] and should be :
