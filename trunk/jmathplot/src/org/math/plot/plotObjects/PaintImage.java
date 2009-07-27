@@ -14,11 +14,11 @@ public class PaintImage implements Plotable {
 
         public void paint(Graphics g);
     }
-    Paintable source;
-    Image img;
-    double[] xyzSW, xyzSE, xyzNW;
-    boolean visible = true;
-    float alpha;
+    protected Paintable source;
+    protected Image img;
+    protected double[] xyzSW, xyzSE, xyzNW;
+    protected boolean visible = true;
+    protected float alpha;
 
     public PaintImage(Paintable _source, float _alpha, double[] _xyzSW, double[] _xyzSE, double[] _xyzNW) {
         source = _source;
