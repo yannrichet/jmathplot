@@ -20,10 +20,8 @@ public class PaintImage implements Plotable {
     boolean visible = true;
     float alpha;
 
-    public PaintImage(Paintable _source, int[] imageSize, float _alpha, double[] _xyzSW, double[] _xyzSE, double[] _xyzNW) {
+    public PaintImage(Paintable _source, float _alpha, double[] _xyzSW, double[] _xyzSE, double[] _xyzNW) {
         source = _source;
-
-
 
         xyzSW = _xyzSW;
         xyzSE = _xyzSE;
