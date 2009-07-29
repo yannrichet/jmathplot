@@ -5,6 +5,7 @@ package org.math.plot;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
@@ -38,14 +39,13 @@ public class DataSelectPanel extends JPanel {
 
     private static final long serialVersionUID = 419181752327223313L;
     ParameterRow[] rows;
-    private Object[][] _data,  _selecteddata;
+    private Object[][] _data, _selecteddata;
     private LinkedList<Object[]> _tmpselecteddata;
     boolean dataUpdated = false;
     private int[] _tmpselectedIndex;
     private int _nbselected;
     private int[] _selectedindex;
     private String[] _parametersNames;
-
     //boolean Zselected = false;
     int _dimension;
 
@@ -98,6 +98,9 @@ public class DataSelectPanel extends JPanel {
 
             add(rows[i]);
         }
+        setPreferredSize(new Dimension(row_width, row_height * _parametersNames.length));
+        setSize(new Dimension(row_width, row_height * _parametersNames.length));
+
         updateSelectedData();
     }
 
@@ -171,10 +174,10 @@ public class DataSelectPanel extends JPanel {
                 _tmpselecteddata.add(_data[i]);
                 _tmpselectedIndex[_nbselected] = i;
                 _nbselected++;
-            /*System.out.print("OK:");
-            for (int j = 0; j < _tmpselecteddata.getLast().length; j++)
-            System.out.print(_tmpselecteddata.getLast()[j]+",");
-            System.out.println("");*/
+                /*System.out.print("OK:");
+                for (int j = 0; j < _tmpselecteddata.getLast().length; j++)
+                System.out.print(_tmpselecteddata.getLast()[j]+",");
+                System.out.println("");*/
             }
         }
         dataUpdated = true;
@@ -304,6 +307,9 @@ public class DataSelectPanel extends JPanel {
         }
         return col;
     }
+    public Font font = new Font("Arial", Font.PLAIN, 10);
+    public int row_height = 60;
+    public int row_width = 300;
 
     class ParameterRow extends JPanel {
 
@@ -314,11 +320,9 @@ public class DataSelectPanel extends JPanel {
         JSlider min, max;
         JCheckBox linkminmax;
         JList list;
-
         //Object[] _values;
         Vector<Object> _kernelStringValues;
         boolean _isNumber;
-
         //double[] _dvalues;
         double[] _kernelDoubleValues;
 
@@ -360,9 +364,9 @@ public class DataSelectPanel extends JPanel {
                 if (copyArray) {
                     A = new double[array.length];
                     System.arraycopy(array, 0, A, 0, array.length);
-                // for (int i = 0; i < A.length; i++) {
-                // A[i] = array[i];
-                // }
+                    // for (int i = 0; i < A.length; i++) {
+                    // A[i] = array[i];
+                    // }
                 } else {
                     A = array;
                 }
@@ -463,8 +467,8 @@ public class DataSelectPanel extends JPanel {
                     if (lo0 < hi) {
                         QuickSort(a, lo0, hi);
 
-                    // If the left index has not reached the right side of array
-                    // must now sort the right partition.
+                        // If the left index has not reached the right side of array
+                        // must now sort the right partition.
                     }
                     if (lo < hi0) {
                         QuickSort(a, lo, hi0);
@@ -529,12 +533,17 @@ public class DataSelectPanel extends JPanel {
             setLayout(new GridLayout(1, 2));
 
             name = new JLabel(_paramName);
-            add(name, 0);
+            name.setFont(font);
+            JPanel left = new JPanel(new BorderLayout());
 
-            JPanel type = new JPanel(new BorderLayout());
+            left.add(name, BorderLayout.CENTER);
+            add(left, 0);
+
+            JPanel right = new JPanel(new BorderLayout());
 
             JPanel XYZ = new JPanel(new GridLayout(_dimension, 1));
             xaxis = new JRadioButton("X");
+            xaxis.setFont(font);
             xaxis.addActionListener(new Action() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -571,6 +580,7 @@ public class DataSelectPanel extends JPanel {
             });
             XYZ.add(xaxis);
             yaxis = new JRadioButton("Y");
+            yaxis.setFont(font);
             yaxis.addActionListener(new Action() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -611,6 +621,7 @@ public class DataSelectPanel extends JPanel {
             }
 
             zaxis = new JRadioButton("Z");
+            zaxis.setFont(font);
             zaxis.addActionListener(new Action() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -649,18 +660,20 @@ public class DataSelectPanel extends JPanel {
                 XYZ.add(zaxis);
             }
 
-            type.add(XYZ, BorderLayout.WEST);
+            left.add(XYZ, BorderLayout.EAST);
 
             if (_isNumber) {
                 parameter = new JPanel();
                 parameter.setLayout(new GridLayout(2, 1));
 
                 min = new JSlider(1, _kernelDoubleValues.length, 1);
+                min.setFont(font);
 
                 min.setMinorTickSpacing(1);
                 min.setSnapToTicks(true);
                 min.setPaintTicks(true);
                 max = new JSlider(1, _kernelDoubleValues.length, _kernelDoubleValues.length);
+                max.setFont(font);
                 max.setMinorTickSpacing(1);
                 max.setSnapToTicks(true);
                 max.setPaintTicks(true);
@@ -691,6 +704,7 @@ public class DataSelectPanel extends JPanel {
             } else {
 
                 list = new JList(_kernelStringValues);
+                list.setFont(font);
                 list.setSelectedIndices(buildIntSeq(0, _kernelStringValues.size() - 1));
                 list.addListSelectionListener(new ListSelectionListener() {
 
@@ -701,11 +715,12 @@ public class DataSelectPanel extends JPanel {
                 });
                 parameter = new JScrollPane(list);
             }
-            type.add(parameter, BorderLayout.CENTER);
-            add(type, 1);
+            right.add(parameter, BorderLayout.CENTER);
+            add(right, 1);
 
             setBorder(BorderFactory.createEtchedBorder());
-            setPreferredSize(new Dimension(400, 60));
+            setPreferredSize(new Dimension(row_width, row_height));
+            setSize(new Dimension(row_width, row_height));
 
         }
 
@@ -761,19 +776,24 @@ public class DataSelectPanel extends JPanel {
                         pp.getPlot(0).setData(pp.mapData(getSelectedProjectedData()));
                     }
                 }
-            //System.out.println(Array.cat(pp.getAxesScales()));
+                //System.out.println(Array.cat(pp.getAxesScales()));
             }
         };
-        new FrameView(dsp).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    /*try {
-    Thread.sleep(5000);
-    } catch (InterruptedException e) {
-    e.printStackTrace();
-    }
+        JFrame f = new JFrame("Test mat editor");
+        f.setContentPane(dsp);
+        f.pack();
+        f.setVisible(true);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    Object[][] data2 = { { 0, 0, 0, 0, "a0" }, { 1, 1, 1, 1, "a1" }, { 2, 2, 2, 2, "a2" }, { 3, 3, 3, 3, "a3" }, { 4, 3, 3, 3, "a3" },
-    { 5, 3, 3, 3, "a4" }, { 5, 4, 3, 3, "a4" } };
-    dsp.setData(data2);*/
+        /*try {
+        Thread.sleep(5000);
+        } catch (InterruptedException e) {
+        e.printStackTrace();
+        }
+
+        Object[][] data2 = { { 0, 0, 0, 0, "a0" }, { 1, 1, 1, 1, "a1" }, { 2, 2, 2, 2, "a2" }, { 3, 3, 3, 3, "a3" }, { 4, 3, 3, 3, "a3" },
+        { 5, 3, 3, 3, "a4" }, { 5, 4, 3, 3, "a4" } };
+        dsp.setData(data2);*/
     }
 }

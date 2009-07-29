@@ -35,7 +35,7 @@ public abstract class AbstractDrawer {
 
 	public final static boolean[][] DOT_SQUARE_PATTERN = stringToPattern("_", "######",  "#____#", "#____#",  "#____#", "#____#", "######");
 
-	public final static Font DEFAULT_FONT = new Font("BitStream Vera Sans", Font.PLAIN, 12);
+	public final static Font DEFAULT_FONT = new Font("Arial", Font.PLAIN, 10);
 
 	public final static Color DEFAULT_COLOR = Color.BLACK;
 
