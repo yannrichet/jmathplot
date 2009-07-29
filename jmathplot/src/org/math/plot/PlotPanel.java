@@ -2,6 +2,7 @@ package org.math.plot;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -48,6 +49,8 @@ public abstract class PlotPanel extends JPanel {
     public final static String STAIRCASE = "STAIRCASE";
     public final static String GRID = "GRID";
     public final static Color[] COLORLIST = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.ORANGE, Color.PINK, Color.CYAN, Color.MAGENTA};
+    private Font font = new Font("Arial", Font.PLAIN, 10);
+
 
     public PlotPanel(PlotCanvas _canvas, String legendOrientation) {
         plotCanvas = _canvas;
@@ -657,5 +660,19 @@ public abstract class PlotPanel extends JPanel {
             e.printStackTrace();
             System.err.println("\n" + man);
         }
+    }
+
+    /**
+     * @return the font
+     */
+    public Font getFont() {
+        return font;
+    }
+
+    /**
+     * @param font the font to set
+     */
+    public void setFont(Font font) {
+        this.font = font;
     }
 }
