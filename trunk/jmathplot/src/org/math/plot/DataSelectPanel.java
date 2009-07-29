@@ -74,6 +74,7 @@ public class DataSelectPanel extends JPanel {
             buildRows(0, 1, 2);
         }
 
+        fireSelectedDataChanged(null);
     }
 
     void buildRows(int... selectedaxis) {
