@@ -66,7 +66,9 @@ public class DataSelectPanel extends JPanel {
         //title.add(new JLabel("Axis / Parameter"));
         //add(title);
 
-        if (_dimension == 1) {
+        if (_dimension == 0) {
+            buildRows();
+        } else if (_dimension == 1) {
             buildRows(0);
         } else if (_dimension == 2) {
             buildRows(0, 1);
@@ -85,12 +87,16 @@ public class DataSelectPanel extends JPanel {
         for (int i = 0; i < _parametersNames.length; i++) {
             rows[i] = new ParameterRow(_parametersNames[i], getColumn(i, _data));
 
-            rows[i].xaxis.setSelected(selectedaxis[0] == i);
-            if (selectedaxis.length >= 2) {
-                rows[i].yaxis.setSelected(selectedaxis[1] == i);
-            }
-            if (selectedaxis.length == 3) {
-                rows[i].zaxis.setSelected(selectedaxis[2] == i);
+            if (selectedaxis != null && selectedaxis.length > 0) {
+                if (selectedaxis.length >= 1) {
+                    rows[i].xaxis.setSelected(selectedaxis[0] == i);
+                }
+                if (selectedaxis.length >= 2) {
+                    rows[i].yaxis.setSelected(selectedaxis[1] == i);
+                }
+                if (selectedaxis.length == 3) {
+                    rows[i].zaxis.setSelected(selectedaxis[2] == i);
+                }
             }
 
             xgrp.add(rows[i].xaxis);
@@ -113,8 +119,10 @@ public class DataSelectPanel extends JPanel {
 
         int[] selectedaxis = new int[_dimension];
         for (int i = 0; i < rows.length; i++) {
-            if (rows[i].xaxis.isSelected()) {
-                selectedaxis[0] = i;
+            if (selectedaxis.length >= 1) {
+                if (rows[i].xaxis.isSelected()) {
+                    selectedaxis[0] = i;
+                }
             }
             if (selectedaxis.length >= 2) {
                 if (rows[i].yaxis.isSelected()) {
@@ -197,6 +205,9 @@ public class DataSelectPanel extends JPanel {
         sel = getSelectedProjectedData();
         System.out.println("selected projected data :");
         switch (_dimension) {
+            case 0:
+                System.out.println("No axis selected");
+                break;
             case 1:
                 System.out.println(Array.cat(new String[]{getSelectedXAxis()}));
                 break;
@@ -238,6 +249,9 @@ public class DataSelectPanel extends JPanel {
     /**return selected data projected on axis selected*/
     public Object[][] getSelectedProjectedData() {
         updateSelectedData();
+        /*if (_dimension == 0) {
+            return getSelectedFullData();
+        }*/
         int[] selextedaxis = getSelectedAxisIndex();
         _selecteddata = new Object[_tmpselecteddata.size()][_dimension];
         for (int i = 0; i < _selecteddata.length; i++) {
@@ -542,7 +556,12 @@ public class DataSelectPanel extends JPanel {
 
             JPanel right = new JPanel(new BorderLayout());
 
-            JPanel XYZ = new JPanel(new GridLayout(_dimension, 1));
+            JPanel XYZ = new JPanel();
+
+            if (_dimension > 0) {
+                XYZ = new JPanel(new GridLayout(_dimension, 1));
+            }
+
             xaxis = new JRadioButton("X");
             xaxis.setFont(font);
             xaxis.addActionListener(new Action() {
@@ -579,7 +598,9 @@ public class DataSelectPanel extends JPanel {
                 public void addPropertyChangeListener(PropertyChangeListener listener) {
                 }
             });
-            XYZ.add(xaxis);
+            if (_dimension >= 1) {
+                XYZ.add(xaxis);
+            }
             yaxis = new JRadioButton("Y");
             yaxis.setFont(font);
             yaxis.addActionListener(new Action() {
@@ -755,7 +776,7 @@ public class DataSelectPanel extends JPanel {
 
         Object[][] data = {{1, 3, 4, 5, "a0"}, {1, 3, 1, 1, "a1"}, {1, 3, 2, 2, "a2"}, {1, 3, 3, 3, "a5"}, {1, 3, 3, 3, "a3"}, {1, 3, 3, 4, "a2"}};
 
-        DataSelectPanel dsp = new DataSelectPanel(data, 3, "x1", "x2", "x3", "x4", "x5") {
+        DataSelectPanel dsp3 = new DataSelectPanel(data, 3, "x1", "x2", "x3", "x4", "x5") {
 
             private static final long serialVersionUID = 1L;
 
@@ -781,11 +802,13 @@ public class DataSelectPanel extends JPanel {
             }
         };
 
-        JFrame f = new JFrame("Test mat editor");
-        f.setContentPane(dsp);
-        f.pack();
-        f.setVisible(true);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame f3 = new JFrame("Test mat editor 3");
+        f3.setContentPane(dsp3);
+        f3.pack();
+        f3.setVisible(true);
+        f3.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
 
         /*try {
         Thread.sleep(5000);
