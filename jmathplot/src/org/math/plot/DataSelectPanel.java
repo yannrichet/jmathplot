@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.util.LinkedList;
 import java.util.Vector;
+import javax.swing.AbstractAction;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -250,7 +251,7 @@ public class DataSelectPanel extends JPanel {
     public Object[][] getSelectedProjectedData() {
         updateSelectedData();
         /*if (_dimension == 0) {
-            return getSelectedFullData();
+        return getSelectedFullData();
         }*/
         int[] selextedaxis = getSelectedAxisIndex();
         _selecteddata = new Object[_tmpselecteddata.size()][_dimension];
@@ -325,6 +326,18 @@ public class DataSelectPanel extends JPanel {
     public Font font = new Font("Arial", Font.PLAIN, 10);
     public int row_height = 60;
     public int row_width = 300;
+
+    public void selectAsX(int row) {
+        rows[row].selectAsX();
+    }
+
+    public void selectAsY(int row) {
+        rows[row].selectAsY();
+    }
+
+    public void selectAsZ(int row) {
+        rows[row].selectAsZ();
+    }
 
     class ParameterRow extends JPanel {
 
@@ -518,6 +531,42 @@ public class DataSelectPanel extends JPanel {
             }
         }
 
+        public void selectAsX() {
+            yaxis.setSelected(false);
+            zaxis.setSelected(false);
+            for (ParameterRow r : rows) {
+                if (!r._paramName.equals(_paramName)) {
+                    r.xaxis.setSelected(false);
+                }
+            }
+            dataUpdated = false;
+            fireSelectedDataChanged(_paramName + " xaxis");
+        }
+
+        public void selectAsY() {
+            xaxis.setSelected(false);
+            zaxis.setSelected(false);
+            for (ParameterRow r : rows) {
+                if (!r._paramName.equals(_paramName)) {
+                    r.yaxis.setSelected(false);
+                }
+            }
+            dataUpdated = false;
+            fireSelectedDataChanged(_paramName + " yaxis");
+        }
+
+        public void selectAsZ() {
+            xaxis.setSelected(false);
+            yaxis.setSelected(false);
+            for (ParameterRow r : rows) {
+                if (!r._paramName.equals(_paramName)) {
+                    r.zaxis.setSelected(false);
+                }
+            }
+            dataUpdated = false;
+            fireSelectedDataChanged(_paramName + " zaxis");
+        }
+
         public ParameterRow(String paramName, Object[] values) {
             _paramName = paramName;
             _isNumber = Array.isDouble(values[0].toString());
@@ -564,38 +613,10 @@ public class DataSelectPanel extends JPanel {
 
             xaxis = new JRadioButton("X");
             xaxis.setFont(font);
-            xaxis.addActionListener(new Action() {
+            xaxis.addActionListener(new AbstractAction() {
 
                 public void actionPerformed(ActionEvent e) {
-                    yaxis.setSelected(false);
-                    zaxis.setSelected(false);
-                    for (ParameterRow r : rows) {
-                        if (!r._paramName.equals(_paramName)) {
-                            r.xaxis.setSelected(false);
-                        }
-                    }
-                    dataUpdated = false;
-                    fireSelectedDataChanged(_paramName + " xaxis");
-                }
-
-                public void setEnabled(boolean b) {
-                }
-
-                public void removePropertyChangeListener(PropertyChangeListener listener) {
-                }
-
-                public void putValue(String key, Object value) {
-                }
-
-                public boolean isEnabled() {
-                    return true;
-                }
-
-                public Object getValue(String key) {
-                    return null;
-                }
-
-                public void addPropertyChangeListener(PropertyChangeListener listener) {
+                    selectAsX();
                 }
             });
             if (_dimension >= 1) {
@@ -603,39 +624,10 @@ public class DataSelectPanel extends JPanel {
             }
             yaxis = new JRadioButton("Y");
             yaxis.setFont(font);
-            yaxis.addActionListener(new Action() {
+            yaxis.addActionListener(new AbstractAction() {
 
                 public void actionPerformed(ActionEvent e) {
-                    xaxis.setSelected(false);
-                    zaxis.setSelected(false);
-                    for (ParameterRow r : rows) {
-                        if (!r._paramName.equals(_paramName)) {
-                            r.yaxis.setSelected(false);
-                        }
-                    }
-                    dataUpdated = false;
-                    fireSelectedDataChanged(_paramName + " yaxis");
-
-                }
-
-                public void setEnabled(boolean b) {
-                }
-
-                public void removePropertyChangeListener(PropertyChangeListener listener) {
-                }
-
-                public void putValue(String key, Object value) {
-                }
-
-                public boolean isEnabled() {
-                    return true;
-                }
-
-                public Object getValue(String key) {
-                    return null;
-                }
-
-                public void addPropertyChangeListener(PropertyChangeListener listener) {
+                    selectAsX();
                 }
             });
             if (_dimension >= 2) {
@@ -644,38 +636,10 @@ public class DataSelectPanel extends JPanel {
 
             zaxis = new JRadioButton("Z");
             zaxis.setFont(font);
-            zaxis.addActionListener(new Action() {
+            zaxis.addActionListener(new AbstractAction() {
 
                 public void actionPerformed(ActionEvent e) {
-                    xaxis.setSelected(false);
-                    yaxis.setSelected(false);
-                    for (ParameterRow r : rows) {
-                        if (!r._paramName.equals(_paramName)) {
-                            r.zaxis.setSelected(false);
-                        }
-                    }
-                    dataUpdated = false;
-                    fireSelectedDataChanged(_paramName + " zaxis");
-                }
-
-                public void setEnabled(boolean b) {
-                }
-
-                public void removePropertyChangeListener(PropertyChangeListener listener) {
-                }
-
-                public void putValue(String key, Object value) {
-                }
-
-                public boolean isEnabled() {
-                    return true;
-                }
-
-                public Object getValue(String key) {
-                    return null;
-                }
-
-                public void addPropertyChangeListener(PropertyChangeListener listener) {
+                    selectAsZ();
                 }
             });
             if (_dimension == 3) {
@@ -815,7 +779,7 @@ public class DataSelectPanel extends JPanel {
         } catch (InterruptedException e) {
         e.printStackTrace();
         }
-
+        
         Object[][] data2 = { { 0, 0, 0, 0, "a0" }, { 1, 1, 1, 1, "a1" }, { 2, 2, 2, 2, "a2" }, { 3, 3, 3, 3, "a3" }, { 4, 3, 3, 3, "a3" },
         { 5, 3, 3, 3, "a4" }, { 5, 4, 3, 3, "a4" } };
         dsp.setData(data2);*/
