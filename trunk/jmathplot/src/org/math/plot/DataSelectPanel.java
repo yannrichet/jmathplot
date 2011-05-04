@@ -50,6 +50,35 @@ public class DataSelectPanel extends JPanel {
     //boolean Zselected = false;
     int _dimension;
 
+    void autoSelectVariableParam() {
+        int d = 0;
+        for (int i = 0; i < _data[0].length; i++) {
+            boolean constant = true;
+            String val = _data[0][i].toString();
+            for (int j = 1; j < _data.length; j++) {
+                if (!_data[j][i].toString().equals(val)) {
+                    System.err.println(_data[j][i] + " != " + val);
+                    constant = false;
+                    break;
+                }
+            }
+            if (!constant) {
+                if (d == 0) {
+                    selectAsX(i);
+                    d++;
+                    continue;
+                } else if (d == 1) {
+                    selectAsY(i);
+                    d++;
+                    continue;
+                } else if (d == 2) {
+                    selectAsZ(i);
+                    break;
+                }
+            }
+        }
+    }
+
     public DataSelectPanel(Object[][] data, int dimension, String... parametersNames) {
         _data = data;
         _dimension = dimension;
@@ -77,7 +106,7 @@ public class DataSelectPanel extends JPanel {
             buildRows(0, 1, 2);
         }
 
-        fireSelectedDataChanged(null);
+        fireSelectedDataChanged("init");
     }
 
     void buildRows(int... selectedaxis) {
@@ -109,6 +138,7 @@ public class DataSelectPanel extends JPanel {
         setPreferredSize(new Dimension(row_width, row_height * _parametersNames.length));
         setSize(new Dimension(row_width, row_height * _parametersNames.length));
 
+        autoSelectVariableParam();
         updateSelectedData();
     }
 
@@ -141,7 +171,7 @@ public class DataSelectPanel extends JPanel {
         dataUpdated = false;
         buildRows(selectedaxis);
 
-        fireSelectedDataChanged("setData");
+        fireSelectedDataChanged("set");
     }
 
     void updateSelectedData() {
@@ -195,34 +225,34 @@ public class DataSelectPanel extends JPanel {
 
     /**Method to override if you want to link to any gui component (for instance, a plotpanel).*/
     public void fireSelectedDataChanged(String from) {
-        System.out.println("fireSelectedDataChanged from " + from);
+        System.err.println("fireSelectedDataChanged from " + from);
         Object[][] sel = getSelectedFullData();
-        System.out.println("selected full data :");
-        System.out.println(Array.cat(_parametersNames));
+        System.err.println("selected full data :");
+        System.err.println(Array.cat(_parametersNames));
         if (sel.length > 0) {
-            System.out.println(Array.cat(getSelectedFullData()));
+            System.err.println(Array.cat(getSelectedFullData()));
         }
 
         sel = getSelectedProjectedData();
-        System.out.println("selected projected data :");
+        System.err.println("selected projected data :");
         switch (_dimension) {
             case 0:
-                System.out.println("No axis selected");
+                System.err.println("No axis selected");
                 break;
             case 1:
-                System.out.println(Array.cat(new String[]{getSelectedXAxis()}));
+                System.err.println(Array.cat(new String[]{getSelectedXAxis()}));
                 break;
             case 2:
-                System.out.println(Array.cat(new String[]{getSelectedXAxis(), getSelectedYAxis()}));
+                System.err.println(Array.cat(new String[]{getSelectedXAxis(), getSelectedYAxis()}));
                 break;
             case 3:
-                System.out.println(Array.cat(new String[]{getSelectedXAxis(), getSelectedYAxis(), getSelectedZAxis()}));
+                System.err.println(Array.cat(new String[]{getSelectedXAxis(), getSelectedYAxis(), getSelectedZAxis()}));
                 break;
         }
         if (sel.length > 0) {
-            System.out.println(Array.cat(getSelectedProjectedData()));
+            System.err.println(Array.cat(sel));
         }
-
+        System.err.println("Done.");
     }
 
     /**return selected data*/
@@ -249,38 +279,38 @@ public class DataSelectPanel extends JPanel {
 
     /**return selected data projected on axis selected*/
     public Object[][] getSelectedProjectedData() {
-        updateSelectedData();
+        //updateSelectedData();
         /*if (_dimension == 0) {
         return getSelectedFullData();
         }*/
-        int[] selextedaxis = getSelectedAxisIndex();
+        int[] selectedaxis = getSelectedAxisIndex();
         _selecteddata = new Object[_tmpselecteddata.size()][_dimension];
         for (int i = 0; i < _selecteddata.length; i++) {
             for (int j = 0; j < _dimension; j++) {
-                _selecteddata[i][j] = _tmpselecteddata.get(i)[selextedaxis[j]];
+                _selecteddata[i][j] = _tmpselecteddata.get(i)[selectedaxis[j]];
             }
         }
         return _selecteddata;
     }
 
     public int[] getSelectedAxisIndex() {
-        int[] selextedaxis = new int[_dimension];
+        int[] selectedaxis = new int[_dimension];
         updateSelectedData();
         for (int i = 0; i < rows.length; i++) {
             if (rows[i].xaxis.isSelected()) {
                 //System.out.println("selextedaxis[0] =" + i);
-                selextedaxis[0] = i;
+                selectedaxis[0] = i;
             }
             if (rows[i].yaxis.isSelected()) {
                 //System.out.println("selextedaxis[1] =" + i);
-                selextedaxis[1] = i;
+                selectedaxis[1] = i;
             }
             if (rows[i].zaxis.isSelected()) {
                 //System.out.println("selextedaxis[2] =" + i);
-                selextedaxis[2] = i;
+                selectedaxis[2] = i;
             }
         }
-        return selextedaxis;
+        return selectedaxis;
     }
 
     /**return selected X axis name*/
@@ -532,6 +562,7 @@ public class DataSelectPanel extends JPanel {
         }
 
         public void selectAsX() {
+            xaxis.setSelected(true);
             yaxis.setSelected(false);
             zaxis.setSelected(false);
             for (ParameterRow r : rows) {
@@ -545,6 +576,7 @@ public class DataSelectPanel extends JPanel {
 
         public void selectAsY() {
             xaxis.setSelected(false);
+            yaxis.setSelected(true);
             zaxis.setSelected(false);
             for (ParameterRow r : rows) {
                 if (!r._paramName.equals(_paramName)) {
@@ -558,6 +590,7 @@ public class DataSelectPanel extends JPanel {
         public void selectAsZ() {
             xaxis.setSelected(false);
             yaxis.setSelected(false);
+            zaxis.setSelected(true);
             for (ParameterRow r : rows) {
                 if (!r._paramName.equals(_paramName)) {
                     r.zaxis.setSelected(false);
@@ -751,10 +784,13 @@ public class DataSelectPanel extends JPanel {
                 pp.setAxisLabel(1, getSelectedYAxis());
                 pp.setAxisLabel(2, getSelectedZAxis());
 
+                System.err.println("plotting ...");
                 if (pp.getPlots().size() == 0) {
+                    System.err.println("   new");
                     pp.addPlot("SCATTER", "data", pp.mapData(getSelectedProjectedData()));
                 } else {
-                    if (from.endsWith("axis")) {
+                    System.err.println(" existing");
+                    if (from != null && from.endsWith("axis")) {
                         pp.resetMapData();
                         pp.removeAllPlots();
                         pp.addPlot("SCATTER", "data", pp.mapData(getSelectedProjectedData()));
