@@ -57,12 +57,12 @@ public class DataSelectPanel extends JPanel {
             String val = _data[0][i].toString();
             for (int j = 1; j < _data.length; j++) {
                 if (!_data[j][i].toString().equals(val)) {
-                    System.err.println(_data[j][i] + " != " + val);
+                    //System.err.println(_data[j][i] + " != " + val);
                     constant = false;
                     break;
                 }
             }
-            if (!constant) {
+            if (!constant && _dimension > d) {
                 if (d == 0) {
                     selectAsX(i);
                     d++;
@@ -660,7 +660,7 @@ public class DataSelectPanel extends JPanel {
             yaxis.addActionListener(new AbstractAction() {
 
                 public void actionPerformed(ActionEvent e) {
-                    selectAsX();
+                    selectAsY();
                 }
             });
             if (_dimension >= 2) {
@@ -771,7 +771,7 @@ public class DataSelectPanel extends JPanel {
         pp.setPreferredSize(new Dimension(400, 400));
         new FrameView(pp).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Object[][] data = {{1, 3, 4, 5, "a0"}, {1, 3, 1, 1, "a1"}, {1, 3, 2, 2, "a2"}, {1, 3, 3, 3, "a5"}, {1, 3, 3, 3, "a3"}, {1, 3, 3, 4, "a2"}};
+        Object[][] data = {{1, 3, 4, 5, "a0"}, {1, 3, 1, 1, "a1"}, {1, 3, 2, 2, "a2"}, {1, 3, 3, 3, "a5"}, {1, 3, 3, 3, "a3"}, {1.5, 3.5, 3, 4, "a2"}};
 
         DataSelectPanel dsp3 = new DataSelectPanel(data, 3, "x1", "x2", "x3", "x4", "x5") {
 
