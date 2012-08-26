@@ -548,6 +548,19 @@ public class Array {
         }
         return str.toString();
     }
+    
+    public static String toString(int[]... v) {
+        StringBuffer str = new StringBuffer();
+        for (int i = 0; i < v.length; i++) {
+            for (int j = 0; j < v[i].length; j++) {
+                str.append(v[i][j] + " ");
+            }
+            if (i < v.length - 1) {
+                str.append("\n");
+            }
+        }
+        return str.toString();
+    }
 
     // check methods
     public static void throwError(String msg) {
