@@ -51,7 +51,6 @@ public abstract class PlotPanel extends JPanel {
     public final static Color[] COLORLIST = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.ORANGE, Color.PINK, Color.CYAN, Color.MAGENTA};
     private Font font = new Font("Arial", Font.PLAIN, 10);
 
-
     public PlotPanel(PlotCanvas _canvas, String legendOrientation) {
         plotCanvas = _canvas;
         setBackground(Color.WHITE);
