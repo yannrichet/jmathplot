@@ -13,7 +13,7 @@ import static java.lang.Math.*;
 
 public abstract class AWTDrawer extends AbstractDrawer {
 
-    protected Projection projection;
+    public Projection projection;
 
     public AWTDrawer(PlotCanvas _canvas) {
         super(_canvas);
@@ -25,7 +25,7 @@ public abstract class AWTDrawer extends AbstractDrawer {
      * @see org.math.plot.render.AbstractDrawer#resetProjection()
      */
     public void resetBaseProjection() {
-        projection.initBaseCoordsProjection();
+        projection.initBaseCoordsProjection(true);
     }
 
     /*
@@ -90,7 +90,7 @@ public abstract class AWTDrawer extends AbstractDrawer {
      * @see org.math.plot.render.AbstractDrawer#projectRatio(double[])
      */
     public int[] projectBase(double... rC) {
-        return projection.screenProjectionBaseRatio(rC);
+        return projection.screenProjectionBase(rC);
     }
 
     /*
@@ -134,7 +134,11 @@ public abstract class AWTDrawer extends AbstractDrawer {
             comp2D.rotate(text_angle, x + w / 2, y - h / 2);
         }
 
-        comp2D.drawString(label, x, y);
+        String[] lines = label.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            comp2D.drawString(lines[i], x, y);
+            y += h;
+        }
 
         if (text_angle != 0) {
             comp2D.rotate(-text_angle, x + w / 2, y - h / 2);
@@ -148,7 +152,7 @@ public abstract class AWTDrawer extends AbstractDrawer {
      *      double[], double, double, double)
      */
     public void drawTextBase(String label, double... rC) {
-        int[] sC = projection.screenProjectionBaseRatio(rC);
+        int[] sC = projection.screenProjectionBase(rC);
 
         // Corner offset adjustment : Text Offset is used Here
         FontRenderContext frc = comp2D.getFontRenderContext();
@@ -164,7 +168,12 @@ public abstract class AWTDrawer extends AbstractDrawer {
             comp2D.rotate(text_angle, x + w / 2, y - h / 2);
         }
 
-        comp2D.drawString(label, x, y);
+        String[] lines = label.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            comp2D.drawString(lines[i], x, y);
+            y += h;
+        }
+        //comp2D.drawString(label, x, y);
 
         if (text_angle != 0) {
             comp2D.rotate(-text_angle, x + w / 2, y - h / 2);
@@ -180,7 +189,7 @@ public abstract class AWTDrawer extends AbstractDrawer {
     public void drawLineBase(double[]... rC) {
         int[][] sC = new int[rC.length][];
         for (int i = 0; i < sC.length; i++) {
-            sC[i] = projection.screenProjectionBaseRatio(rC[i]);
+            sC[i] = projection.screenProjectionBase(rC[i]);
         }
         drawLine(sC);
     }
@@ -383,19 +392,19 @@ public abstract class AWTDrawer extends AbstractDrawer {
         /*double[] _cornerSW_tr = new double[2];
         double[] _cornerSW = { 0, img.getHeight(canvas) };
         t.transform(_cornerSW, 0, _cornerSW_tr, 0, 1);
-
+        
         if (isDiff(_cornerSW_tr, cornerSW)) {
         double[] vectSW_NW_1 = { (double) cornerNW[0] - (double) cornerSW[0], (double) cornerNW[1] - (double) cornerSW[1] };
         double[] vectSW_NW_2 = { (double) cornerNW[0] - (double) _cornerSW_tr[0], (double) cornerNW[1] - (double) _cornerSW_tr[1] };
-
+        
         double normvect_1 = sqrt(sqr(vectSW_NW_1[0]) + sqr(vectSW_NW_1[1]));
         double normvect_2 = sqrt(sqr(vectSW_NW_1[0]) + sqr(vectSW_NW_1[1]));
-
+        
         double cos_angle = (((vectSW_NW_1[0] * vectSW_NW_2[0] + vectSW_NW_1[1] * vectSW_NW_2[1]) / (normvect_1 * normvect_2)));
         double vect = (vectSW_NW_1[0] * vectSW_NW_2[1] - vectSW_NW_1[1] * vectSW_NW_2[0]);
-
+        
         System.out.println(cos_angle + " " + vect + " -> " + toDegrees(acos(cos_angle)));
-
+        
         //System.out.println(" "+vectSE_NW_1[0]+","+vectSE_NW_1[1]+"  "+vectSE_NW_2[0]+","+vectSE_NW_2[1]);
         AffineTransform t2 = new AffineTransform();
         if (vect > 0)
@@ -403,7 +412,7 @@ public abstract class AWTDrawer extends AbstractDrawer {
         else
         t2.rotate(-acos(cos_angle), cornerNW[0], cornerNW[1]);
         t.preConcatenate(t2);
-
+        
         }*/
 
         return t;
