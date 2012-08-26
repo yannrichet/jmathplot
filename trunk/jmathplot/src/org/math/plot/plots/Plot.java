@@ -122,9 +122,9 @@ public abstract class Plot implements Plotable, Noteable, Editable {
 
         draw.setColor(PlotCanvas.NOTE_COLOR);
         draw.drawCoordinate(coordNoted);
-        draw.drawText(Array.cat(draw.canvas.reverseMapedData(coordNoted)), coordNoted);
-    }
-
+        draw.drawText(Array.cat("\n",draw.canvas.reverseMapedData(coordNoted)), coordNoted);
+        }
+          
     public abstract void plot(AbstractDrawer draw, Color c);
 
     public void plot(AbstractDrawer draw) {
