@@ -630,14 +630,15 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
                         linkedLegendPanel.note(i);
                     }
                     getPlot(i).note(draw);
-                    if (allowNoteCoord && coordNoted != null) {
-                        getPlot(i).noteCoord(draw, coordNoted);
-                    }
                     //return;
+                }
+                if (allowNoteCoord && coordNoted != null) {
+                    getPlot(i).noteCoord(draw, coordNoted);
                 }
             }
         }
     }
+    
     // ///////////////////////////////////////////
     // ////// Listeners //////////////////////////
     // ///////////////////////////////////////////
@@ -715,7 +716,7 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
                 if (abs(mouseCurent[0] - mouseClick[0]) > 10 && abs(mouseCurent[1] - mouseClick[1]) > 10) {
                     int[] origin = {min(mouseClick[0], mouseCurent[0]), min(mouseClick[1], mouseCurent[1])};
                     double[] ratio = {abs((double) (mouseCurent[0] - mouseClick[0]) / (double) getWidth()),
-                                      abs((double) (mouseCurent[1] - mouseClick[1]) / (double) getHeight())
+                        abs((double) (mouseCurent[1] - mouseClick[1]) / (double) getHeight())
                     };
                     draw.dilate(origin, ratio);
                     repaint();
@@ -723,6 +724,7 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
                 break;
         }
         //repaint();
+        dragging = false;
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -835,21 +837,21 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         int[] origin;
         double[] ratio;
         // double factor = 1.5;
-        switch (ActionMode) {
-            case ZOOM:
-                if (e.getWheelRotation() == -1) {
-                    origin = new int[]{(int) (mouseCurent[0] - getWidth() / 3/* (2*factor) */), (int) (mouseCurent[1] - getHeight() / 3/* (2*factor) */)};
-                    ratio = new double[]{0.666/* 1/factor, 1/factor */, 0.666};
-                } else {
-                    origin = new int[]{(int) (mouseCurent[0] - getWidth() / 1.333/* (2/factor) */),
-                                       (int) (mouseCurent[1] - getHeight() / 1.333/* (2/factor) */)
-                            };
-                    ratio = new double[]{1.5, 1.5 /* factor, factor */};
-                }
-                draw.dilate(origin, ratio);
-                repaint();
-                break;
+        //switch (ActionMode) {
+        //    case ZOOM:
+        if (e.getWheelRotation() == -1) {
+            origin = new int[]{(int) (mouseCurent[0] - getWidth() / 3/* (2*factor) */), (int) (mouseCurent[1] - getHeight() / 3/* (2*factor) */)};
+            ratio = new double[]{0.666/* 1/factor, 1/factor */, 0.666};
+        } else {
+            origin = new int[]{(int) (mouseCurent[0] - getWidth() / 1.333/* (2/factor) */),
+                (int) (mouseCurent[1] - getHeight() / 1.333/* (2/factor) */)
+            };
+            ratio = new double[]{1.5, 1.5 /* factor, factor */};
         }
+        draw.dilate(origin, ratio);
+        repaint();
+        //       break;
+        //}
     }
 
     public void componentHidden(ComponentEvent e) {
