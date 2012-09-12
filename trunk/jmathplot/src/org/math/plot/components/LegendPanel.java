@@ -6,6 +6,7 @@ import java.util.*;
 
 import javax.swing.*;
 
+import javax.swing.border.Border;
 import org.math.plot.*;
 import org.math.plot.canvas.*;
 import org.math.plot.plots.*;
@@ -39,7 +40,7 @@ public class LegendPanel extends JPanel implements ComponentListener {
         container = new JPanel();
         container.setBackground(plotCanvas.getBackground());
         container.setLayout(new GridLayout(1, 1, inset, inset));
-        //container.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 1),null));
+        container.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY, 1),null));
 
         updateLegends();
 
@@ -140,6 +141,7 @@ public class LegendPanel extends JPanel implements ComponentListener {
         JPanel color;
         JLabel name;
         Plot plot;
+        Border colorborder;
 
         public Legend(Plot p) {
             plot = p;
@@ -147,6 +149,8 @@ public class LegendPanel extends JPanel implements ComponentListener {
             setLayout(new BorderLayout(2, 2));
 
             color = new JPanel();
+            colorborder = BorderFactory.createMatteBorder(2, 1, 2, 1, Color.WHITE);
+            color.setBorder(colorborder);
             name = new JLabel();
             name.setFont(plotPanel.getFont());
 
