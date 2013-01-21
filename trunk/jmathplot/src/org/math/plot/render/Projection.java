@@ -4,6 +4,7 @@
 package org.math.plot.render;
 
 import org.math.plot.plotObjects.*;
+import org.math.plot.utils.FastMath;
 
 public abstract class Projection {
 
@@ -76,7 +77,7 @@ public abstract class Projection {
         for (int i = 0; i < draw.canvas.base.dimension; i++) {
             double normdist_pC_baseCoords = 0;
             if (draw.canvas.base.axesScales[i].equalsIgnoreCase(Base.LOGARITHM)) {
-                normdist_pC_baseCoords = ((log(pC[i]) - log(draw.canvas.base.baseCoords[0][i])) / (log(draw.canvas.base.baseCoords[i + 1][i]) - log(draw.canvas.base.baseCoords[0][i])));
+                normdist_pC_baseCoords = ((FastMath.log(pC[i]) - FastMath.log(draw.canvas.base.baseCoords[0][i])) / (FastMath.log(draw.canvas.base.baseCoords[i + 1][i]) - FastMath.log(draw.canvas.base.baseCoords[0][i])));
             } else if (draw.canvas.base.axesScales[i].equalsIgnoreCase(Base.LINEAR) || draw.canvas.base.axesScales[i].equalsIgnoreCase(Base.STRINGS)) {
                 normdist_pC_baseCoords = ((pC[i] - draw.canvas.base.baseCoords[0][i]) / (draw.canvas.base.baseCoords[i + 1][i] - draw.canvas.base.baseCoords[0][i]));
             }
@@ -121,10 +122,6 @@ public abstract class Projection {
         }
 
         return new int[]{(int) sC[0], (int) sC[1]};
-    }
-
-    private double log(double x) {
-        return Math.log(x);
     }
 
     protected abstract double[] baseCoordsScreenProjectionRatio(double[] xyz);

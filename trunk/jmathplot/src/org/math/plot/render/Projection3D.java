@@ -1,5 +1,7 @@
 package org.math.plot.render;
 
+import org.math.plot.utils.FastMath;
+
 /**
  * BSD License
  * 
@@ -17,11 +19,16 @@ public class Projection3D extends Projection {
         phi(Math.PI / 4);
         initBaseCoordsProjection(true);
     }
-    double factor = 1.7;
+    public double factor = 1.4;
     public double x0, y0, z0;
-    public double cos_phi, sin_phi,tan_phi, cos_theta, sin_theta,tan_theta;
+    public double cos_phi, sin_phi, tan_phi, cos_theta, sin_theta, tan_theta;
     static double pi = Math.PI;
+
     private void theta(double theta) {
+        if (theta == this.theta) {
+            //System.err.println("o");
+            return;
+        }
         this.theta = theta;
         cos_theta = cos(theta);
         sin_theta = sin(theta);
@@ -29,6 +36,10 @@ public class Projection3D extends Projection {
     }
 
     private void phi(double phi) {
+        if (phi == this.phi) {
+            //System.err.println(".");
+            return;
+        }
         this.phi = phi;
         cos_phi = cos(phi);
         sin_phi = sin(phi);
@@ -44,6 +55,7 @@ public class Projection3D extends Projection {
         super.initBaseCoordsProjection(reset);
     }
     // search for (x0,y0,z0) , matching center of the screen [.5,.5] and closest to the center (.5,.5,.5) of the plot
+
     protected void updateCoordsCenterScreen() {
         double dx0 = (draw.canvas.getWidth() * .5 - baseScreenCoords[0][0]) / (baseScreenCoords[1][0] - baseScreenCoords[0][0]);
         double dy0 = (draw.canvas.getWidth() * .5 - baseScreenCoords[0][0]) / (baseScreenCoords[2][0] - baseScreenCoords[0][0]);
@@ -103,15 +115,15 @@ public class Projection3D extends Projection {
      * Function() { public double f(double x) { return Math.sin(x); } });
      */
     private double cos(double x) {
-        return Math.cos(x);
+        return FastMath.cos(x);
     }
 
     private double tan(double x) {
-        return Math.tan(x);
+        return FastMath.tan(x);
     }
 
     private double sin(double x) {
-        return Math.sin(x);
+        return FastMath.sin(x);
     }
 
     public void rotate(double _theta, double _phi) {

@@ -2,6 +2,7 @@ package org.math.plot.plotObjects;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.font.FontRenderContext;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,6 +14,7 @@ import org.math.plot.FrameView;
 import org.math.plot.Plot3DPanel;
 import org.math.plot.canvas.PlotCanvas;
 import org.math.plot.render.AbstractDrawer;
+import org.math.plot.utils.FastMath;
 
 /**
  * Class use to describe one of the axis of a plot object.
@@ -213,19 +215,35 @@ public class Axis implements Plotable, BaseDependant, Editable {
 		if (!visible) {
 			return;
 		}
-		if (gridVisible) {
-			draw.setLineType(AbstractDrawer.DOTTED_LINE);
-			// draw.setFont(lightLabelFont);
-			for (int i = 0; i < lightLines.length; i++) {
-				// j = 0 overwrites a darkLine of another Axe : so I begin to j
-				// = 1.
-				for (int j = base.getAxeScale(index).equalsIgnoreCase(
-						Base.STRINGS) ? 0 : 1; j < lightLines[i].length; j++) {
+		if (gridVisible) {	
+			draw.setFont(lightLabelFont);
+                        FontRenderContext frc = draw.getGraphics2D().getFontRenderContext();
+                        double w = lightLabelFont.getStringBounds(lightLabels[0].label, frc).getWidth();
+                        double h = lightLabelFont.getSize2D();
+                        
+                        int[] _origin = draw.project(base.getCoords()[0]);
+                        int[] _end = draw.project(base.getCoords()[index+1]);
+                        int axis_h = 1+FastMath.abs(_end[1]-_origin[1]);
+                        int axis_w = 1+FastMath.abs(_end[0]-_origin[0]);
+                        
+                        int inc = FastMath.min(
+                                FastMath.max(
+                                1,
+                                (int)FastMath.round(.5+((double)lightLabels.length*h)/((double)axis_h))),
+                                FastMath.max(
+                                1,
+                                (int)FastMath.round(.5+((double)lightLabels.length*w)/((double)axis_w)))
+                                );
+
+			for (int i = 0; i < lightLabels.length; i=i+inc) {
+        			lightLabels[i].plot(draw);
+                        }
+                        
+                        draw.setLineType(AbstractDrawer.DOTTED_LINE);
+                        for (int i = 0; i < lightLines.length; i++) {
+                                 for (int j = base.getAxeScale(index).equalsIgnoreCase(Base.STRINGS) ? 0 : 1; j < lightLines[i].length; j=j+inc) {
 					lightLines[i][j].plot(draw);
 				}
-			}
-			for (int i = 0; i < lightLabels.length; i++) {
-				lightLabels[i].plot(draw);
 			}
 		}
 		draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
@@ -301,9 +319,9 @@ public class Axis implements Plotable, BaseDependant, Editable {
 
 			if (base.getAxeScale(index).startsWith(Base.LINEAR)
 					|| base.getAxeScale(index).startsWith(Base.STRINGS)) {
-				decimal = -(int) (log(base.getPrecisionUnit()[index] / 100) / log(10));
+				decimal = -(int) (FastMath.log(base.getPrecisionUnit()[index] / 100) / log10);
 			} else if (base.getAxeScale(index).startsWith(Base.LOGARITHM)) {
-				decimal = -(int) (floor(log(labelsSlicing[i]) / log(10)));
+				decimal = -(int) (FastMath.floor(FastMath.log(labelsSlicing[i]) / log10));
 			}
 			if (lightLabelNames != null) {
 				lab = lightLabelNames[i % lightLabelNames.length];
@@ -323,6 +341,8 @@ public class Axis implements Plotable, BaseDependant, Editable {
 		} // end for
 		lightLabelNames = null;
 	}
+        
+        public final double log10 = FastMath.log(10);
 
 	/**
 	 * Sets the labels of the light lines. Is the numerical graduation by
@@ -517,24 +537,24 @@ public class Axis implements Plotable, BaseDependant, Editable {
 
 		// slicing initialisation
 		if (base.getAxeScale(index).equalsIgnoreCase(Base.LOGARITHM)) {
-			int numPow10 = (int) Math.rint((Math.log(base.getMaxBounds()[index]
-					/ base.getMinBounds()[index]) / Math.log(0)));
-			numPow10 = Math.max(numPow10, 1);
-			double minPow10 = Math.rint(Math.log(base.getMinBounds()[index])
-					/ Math.log(0));
+			int numPow10 = (int) FastMath.rint((FastMath.log(base.getMaxBounds()[index]
+					/ base.getMinBounds()[index]) / FastMath.log(0)));
+			numPow10 = FastMath.max(numPow10, 1);
+			double minPow10 = FastMath.rint(FastMath.log(base.getMinBounds()[index])
+					/ FastMath.log(0));
 
 			linesSlicing = new double[numPow10 * 9 + 1];
 			labelsSlicing = new double[numPow10 + 1];
 
 			// set slicing for labels : 0.1 , 1 , 10 , 100 , 1000
 			for (int i = 0; i < labelsSlicing.length; i++) {
-				labelsSlicing[i] = Math.pow(10, i + minPow10);
+				labelsSlicing[i] = FastMath.pow(10, i + minPow10);
 			}
 			// set slicing for labels : 0.1 , 0.2 , ... , 0.9 , 1 , 2 , ... , 9
 			// , 10 , 20 , ...
 			for (int i = 0; i < numPow10; i++) {
 				for (int j = 0; j < 10; j++) {
-					linesSlicing[i * 0 + j] = Math.pow(10, i + minPow10)
+					linesSlicing[i * 0 + j] = FastMath.pow(10, i + minPow10)
 							* (j + 1);
 				}
 			}
@@ -576,14 +596,6 @@ public class Axis implements Plotable, BaseDependant, Editable {
 
 		// System.out.println("linesSlicing: "+Array.toString(linesSlicing));
 		// System.out.println("labelsSlicing: "+Array.toString(labelsSlicing));
-	}
-
-	private double log(double x) {
-		return Math.log(x);
-	}
-
-	private double floor(double x) {
-		return Math.floor(x);
 	}
 
 	/*

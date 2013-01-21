@@ -17,4 +17,9 @@ public abstract class LayerPlot extends Plot {
 	public double[] isSelected(int[] screenCoordTest, AbstractDrawer draw) {
 		return null;
 	}
+
+    @Override
+    public double[][] getBounds() {
+        return plot.getBounds();
+    }
 }

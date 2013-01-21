@@ -1,5 +1,7 @@
 package org.math.plot.canvas;
 
+import org.math.plot.utils.FastMath;
+import javax.swing.JFrame;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -25,9 +27,9 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import org.math.plot.components.DatasFrame;
+import org.math.plot.components.DataFrame;
 import org.math.plot.components.LegendPanel;
-import org.math.plot.components.SetScalesFrame;
+import org.math.plot.components.ScalesFrame;
 import org.math.plot.plotObjects.Base;
 import org.math.plot.plotObjects.BaseDependant;
 import org.math.plot.plotObjects.BasePlot;
@@ -35,8 +37,6 @@ import org.math.plot.plotObjects.Plotable;
 import org.math.plot.plots.Plot;
 import org.math.plot.render.AbstractDrawer;
 import org.math.plot.utils.Array;
-
-import static java.lang.Math.*;
 
 import static org.math.plot.plotObjects.Base.*;
 
@@ -217,14 +217,20 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
     }
 
     public void includeInBounds(double... into) {
-        base.includeInBounds(into);
+        boolean changed = base.includeInBounds(into);
+        if (!changed) {
+            return;
+        }
         grid.resetBase();
         repaint();
     }
 
     public void includeInBounds(Plot plot) {
-        base.includeInBounds(Array.min(plot.getData()));
-        base.includeInBounds(Array.max(plot.getData()));
+        boolean changed = base.includeInBounds(Array.min(plot.getBounds()));
+        changed = changed | base.includeInBounds(Array.max(plot.getBounds()));
+        if (!changed) {
+            return;
+        }
         resetBase();
         repaint();
     }
@@ -232,7 +238,7 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
     public void setAutoBounds() {
         if (plots.size() > 0) {
             Plot plot0 = this.getPlot(0);
-            base.setRoundBounds(Array.min(plot0.getData()), Array.max(plot0.getData()));
+            base.setRoundBounds(Array.min(plot0.getBounds()), Array.max(plot0.getBounds()));
         } else { // build default min and max bounds
             double[] min = new double[base.dimension];
             double[] max = new double[base.dimension];
@@ -249,8 +255,8 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         }
         for (int i = 1; i < plots.size(); i++) {
             Plot ploti = this.getPlot(i);
-            base.includeInBounds(Array.min(ploti.getData()));
-            base.includeInBounds(Array.max(ploti.getData()));
+            base.includeInBounds(Array.min(ploti.getBounds()));
+            base.includeInBounds(Array.max(ploti.getBounds()));
         }
         resetBase();
         repaint();
@@ -259,7 +265,7 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
     public void setAutoBounds(int axe) {
         if (plots.size() > 0) {
             Plot plot0 = this.getPlot(0);
-            base.setRoundBounds(axe, Array.min(plot0.getData())[axe], Array.max(plot0.getData())[axe]);
+            base.setRoundBounds(axe, Array.min(plot0.getBounds())[axe], Array.max(plot0.getBounds())[axe]);
         } else { // build default min and max bounds
             double min = 0.0;
             double max = 0.0;
@@ -275,8 +281,8 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
 
         for (int i = 1; i < plots.size(); i++) {
             Plot ploti = this.getPlot(i);
-            base.includeInBounds(axe, Array.min(ploti.getData())[axe]);
-            base.includeInBounds(axe, Array.max(ploti.getData())[axe]);
+            base.includeInBounds(axe, Array.min(ploti.getBounds())[axe]);
+            base.includeInBounds(axe, Array.max(ploti.getBounds())[axe]);
         }
         resetBase();
         repaint();
@@ -326,6 +332,15 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         objects.clear();
         repaint();
     }
+    boolean adjustBounds = true;
+
+    public void setAdjustBounds(boolean adjust) {
+        adjustBounds = adjust;
+    }
+
+    public boolean getAdjustBounds() {
+        return adjustBounds;
+    }
 
     public int addPlot(Plot newPlot) {
         plots.add(newPlot);
@@ -335,7 +350,11 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         if (plots.size() == 1) {
             setAutoBounds();
         } else {
-            includeInBounds(newPlot);
+            if (adjustBounds) {
+                includeInBounds(newPlot);
+            } else {
+                repaint();
+            }
         }
         return plots.size() - 1;
     }
@@ -350,7 +369,11 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
 
     public void changePlotData(int I, double[]... XY) {
         getPlot(I).setData(XY);
-        repaint();
+        if (adjustBounds) {
+            includeInBounds(getPlot(I));
+        } else {
+            repaint();
+        }
     }
 
     public void changePlotName(int I, String name) {
@@ -375,7 +398,11 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
             linkedLegendPanel.updateLegends();
         }
         if (plots.size() != 0) {
-            setAutoBounds();
+            if (adjustBounds) {
+                setAutoBounds();
+            } else {
+                repaint();
+            }
         }
 
     }
@@ -386,7 +413,9 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
             linkedLegendPanel.updateLegends();
         }
         if (plots.size() != 0) {
-            setAutoBounds();
+            if (adjustBounds) {
+                setAutoBounds();
+            }
         }
 
     }
@@ -449,18 +478,27 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         } catch (IllegalArgumentException ex) {
         }
     }
+    JFrame scalesFrame = new ScalesFrame(this);
 
-    public void displaySetScalesFrame() {
-        new SetScalesFrame(this);
+    public void setScalesFrame(JFrame scalesFrame) {
+        this.scalesFrame = scalesFrame;
     }
 
-    public void displayDatasFrame(int i) {
-        DatasFrame df = new DatasFrame(this, linkedLegendPanel);
-        df.panels.setSelectedIndex(i);
+    public void displayScalesFrame() {
+        scalesFrame.setVisible(true);
+    }
+    DataFrame dataFrame = new DataFrame(this, linkedLegendPanel);
+
+    public void setDataFrame(DataFrame dataFrame) {
+        this.dataFrame = dataFrame;
     }
 
-    public void displayDatasFrame() {
-        displayDatasFrame(0);
+    public void displayDataFrame(int i) {
+        dataFrame.selectIndex(i);
+    }
+
+    public void displayDataFrame() {
+        displayDataFrame(0);
     }
     boolean mapset = false;
 
@@ -582,7 +620,7 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
     // ///////////////////////////////////////////
     // anti-aliasing constant
     final protected static RenderingHints AALIAS = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    public static Color NOTE_COLOR = Color.BLACK;
+    public static Color NOTE_COLOR = Color.DARK_GRAY;
     public static Color EDIT_COLOR = Color.BLACK;
     public boolean allowEdit = true;
     public boolean allowNote = true;
@@ -607,12 +645,12 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         grid.plot(draw);
 
         for (int i = 0; i < plots.size(); i++) {
-            getPlot(i).plot(draw);
-            if (linkedLegendPanel != null) {
-                linkedLegendPanel.nonote(i);
+                getPlot(i).plot(draw);
+                if (linkedLegendPanel != null) {
+                    linkedLegendPanel.nonote(i);
+                }
             }
-        }
-
+        
         for (int i = 0; i < objects.size(); i++) {
             getPlotable(i).plot(draw);
         }
@@ -693,7 +731,7 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
                 repaint();
                 Graphics gcomp = getGraphics();
                 gcomp.setColor(Color.black);
-                gcomp.drawRect(min(mouseClick[0], mouseCurent[0]), min(mouseClick[1], mouseCurent[1]), abs(mouseCurent[0] - mouseClick[0]), abs(mouseCurent[1] - mouseClick[1]));
+                gcomp.drawRect(FastMath.min(mouseClick[0], mouseCurent[0]), FastMath.min(mouseClick[1], mouseCurent[1]), FastMath.abs(mouseCurent[0] - mouseClick[0]), FastMath.abs(mouseCurent[1] - mouseClick[1]));
                 break;
         }
         //repaint();
@@ -713,10 +751,10 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         e.consume();
         switch (ActionMode) {
             case ZOOM:
-                if (abs(mouseCurent[0] - mouseClick[0]) > 10 && abs(mouseCurent[1] - mouseClick[1]) > 10) {
-                    int[] origin = {min(mouseClick[0], mouseCurent[0]), min(mouseClick[1], mouseCurent[1])};
-                    double[] ratio = {abs((double) (mouseCurent[0] - mouseClick[0]) / (double) getWidth()),
-                        abs((double) (mouseCurent[1] - mouseClick[1]) / (double) getHeight())
+                if (FastMath.abs(mouseCurent[0] - mouseClick[0]) > 10 && FastMath.abs(mouseCurent[1] - mouseClick[1]) > 10) {
+                    int[] origin = {FastMath.min(mouseClick[0], mouseCurent[0]), FastMath.min(mouseClick[1], mouseCurent[1])};
+                    double[] ratio = {FastMath.abs((double) (mouseCurent[0] - mouseClick[0]) / (double) getWidth()),
+                                      FastMath.abs((double) (mouseCurent[1] - mouseClick[1]) / (double) getHeight())
                     };
                     draw.dilate(origin, ratio);
                     repaint();
@@ -844,7 +882,7 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
             ratio = new double[]{0.666/* 1/factor, 1/factor */, 0.666};
         } else {
             origin = new int[]{(int) (mouseCurent[0] - getWidth() / 1.333/* (2/factor) */),
-                (int) (mouseCurent[1] - getHeight() / 1.333/* (2/factor) */)
+                               (int) (mouseCurent[1] - getHeight() / 1.333/* (2/factor) */)
             };
             ratio = new double[]{1.5, 1.5 /* factor, factor */};
         }

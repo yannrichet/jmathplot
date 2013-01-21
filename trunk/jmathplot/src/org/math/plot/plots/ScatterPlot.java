@@ -79,6 +79,11 @@ public class ScatterPlot extends Plot {
     public double[][] getData() {
         return XY;
     }
+    
+    @Override
+    public double[][] getBounds() {
+        return Array.mergeRows(Array.min(XY),Array.max(XY));
+    }
 
     public double[] isSelected(int[] screenCoordTest, AbstractDrawer draw) {
         for (int i = 0; i < XY.length; i++) {
@@ -111,8 +116,8 @@ public class ScatterPlot extends Plot {
             double[][] XYZ = new double[10][3];
              tags = new String[10];
             for (int j = 0; j < XYZ.length; j++) {
-                XYZ[j][0] = /*1 +*/ Math.random();
-                XYZ[j][1] = /*100 **/ Math.random();
+                XYZ[j][0] = /*1 +*/ 2.5*Math.random();
+                XYZ[j][1] = /*100 **/  Math.random();
                 XYZ[j][2] = /*0.0001 **/ Math.random();
                 tags[j] = "tags "+ j;
             }

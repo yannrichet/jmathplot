@@ -1,13 +1,12 @@
 package org.math.plot.canvas;
 
+import org.math.plot.utils.FastMath;
 import java.awt.*;
 import java.awt.event.*;
 
 import org.math.plot.plotObjects.*;
 import org.math.plot.plots.*;
 import org.math.plot.render.*;
-
-import static java.lang.Math.*;
 
 import static org.math.plot.plotObjects.Base.*;
 import static org.math.plot.utils.Array.*;
@@ -28,6 +27,11 @@ public class Plot3DCanvas extends PlotCanvas {
         ActionMode = ROTATION;
     }
 
+        public Plot3DCanvas(Base b) {
+        super(b, new BasePlot(b, "X","Y","Z"));
+        ActionMode = ROTATION;
+    }
+    
     public Plot3DCanvas(Base b, BasePlot bp) {
         super(b, bp);
         ActionMode = ROTATION;
@@ -56,6 +60,10 @@ public class Plot3DCanvas extends PlotCanvas {
         } else {
             return XYZ;
         }
+    }
+
+    public void setDefaultZoom(double zoom_factor) {
+        ((Projection3D) ((AWTDrawer3D) draw).projection).factor = zoom_factor;
     }
 
     public int addScatterPlot(String name, Color c, double[][] XYZ) {
@@ -158,7 +166,7 @@ public class Plot3DCanvas extends PlotCanvas {
                 repaint();
                 Graphics gcomp = getGraphics();
                 gcomp.setColor(Color.black);
-                gcomp.drawRect(min(mouseClick[0], mouseCurent[0]), min(mouseClick[1], mouseCurent[1]), abs(mouseCurent[0] - mouseClick[0]), abs(mouseCurent[1]
+                gcomp.drawRect(FastMath.min(mouseClick[0], mouseCurent[0]), FastMath.min(mouseClick[1], mouseCurent[1]), FastMath.abs(mouseCurent[0] - mouseClick[0]), FastMath.abs(mouseCurent[1]
                         - mouseClick[1]));
                 break;
             case ROTATION:

@@ -1,6 +1,6 @@
 package org.math.plot.plotObjects;
 
-import static java.lang.Math.*;
+import org.math.plot.utils.FastMath;
 
 /**
  * BSD License
@@ -66,7 +66,7 @@ public class Base {
 
 	private void setPrecisionUnit(int i, double Xmi, double Xma) {
 		if (Xma - Xmi > 0) {
-			precisionUnit[i] = pow(10, floor(log(Xma - Xmi) / log(10)));
+			precisionUnit[i] = FastMath.pow(10, FastMath.floor(FastMath.log(Xma - Xmi) / FastMath.log(10)));
 		} else {
 			precisionUnit[i] = 1;
 		}
@@ -152,9 +152,9 @@ public class Base {
 	public void roundBounds(int i) {
 		setPrecisionUnit(i, trueXmin[i], trueXmax[i]);
 		if (axesScales[i].equalsIgnoreCase(LOGARITHM)) {
-			setBounds(i, pow(10, floor(log(trueXmin[i]) / log(10))), pow(10, ceil(log(trueXmax[i]) / log(10))));
+			setBounds(i, FastMath.pow(10, FastMath.floor(FastMath.log(trueXmin[i]) / FastMath.log(10))), FastMath.pow(10, FastMath.ceil(FastMath.log(trueXmax[i]) / FastMath.log(10))));
 		} else if (axesScales[i].equalsIgnoreCase(LINEAR)||axesScales[i].equalsIgnoreCase(STRINGS)) {
-			setBounds(i, precisionUnit[i] * (floor(trueXmin[i] / precisionUnit[i])), precisionUnit[i] * (ceil(trueXmax[i] / precisionUnit[i])));
+			setBounds(i, precisionUnit[i] * (FastMath.floor(trueXmin[i] / precisionUnit[i])), precisionUnit[i] * (FastMath.ceil(trueXmax[i] / precisionUnit[i])));
 		}
 
 		/*
@@ -188,31 +188,49 @@ public class Base {
 		}
 	}
 
-	public void includeInBounds(int dim, double XY) {
-		for (int i = 0; i < roundXmin.length; i++) {
-			if (i == dim)
-				if (XY < trueXmin[i])
-					trueXmin[i] = XY;
-		}
-		for (int i = 0; i < roundXmax.length; i++) {
-			if (i == dim)
-				if (XY > trueXmax[i])
-					trueXmax[i] = XY;
-		}
-		roundBounds(dim);
-	}
+    public boolean includeInBounds(int dim, double XY) {
+        boolean changed = false;
+        for (int i = 0; i < roundXmin.length; i++) {
+            if (i == dim) {
+                if (XY < trueXmin[i]) {
+                    trueXmin[i] = XY;
+                    changed = true;
+                }
+            }
+        }
+        for (int i = 0; i < roundXmax.length; i++) {
+            if (i == dim) {
+                if (XY > trueXmax[i]) {
+                    trueXmax[i] = XY;
+                    changed = true;
+                }
+            }
+        }
+        if (changed) {
+            roundBounds(dim);
+        }
+        return changed;
+    }
 
-	public void includeInBounds(double[] XY) {
-		for (int i = 0; i < roundXmin.length; i++) {
-			if (XY[i] < trueXmin[i])
-				trueXmin[i] = XY[i];
-		}
-		for (int i = 0; i < roundXmax.length; i++) {
-			if (XY[i] > trueXmax[i])
-				trueXmax[i] = XY[i];
-		}
-		setRoundBounds(trueXmin, trueXmax);
-	}
+    public boolean includeInBounds(double[] XY) {
+        boolean changed = false;
+        for (int i = 0; i < roundXmin.length; i++) {
+            if (XY[i] < trueXmin[i]) {
+                trueXmin[i] = XY[i];
+                changed = true;
+            }
+        }
+        for (int i = 0; i < roundXmax.length; i++) {
+            if (XY[i] > trueXmax[i]) {
+                trueXmax[i] = XY[i];
+                changed = true;
+            }
+        }
+        if (changed) {
+            setRoundBounds(trueXmin, trueXmax);
+        }
+        return changed;
+    }
 
 	// ///////////////////////////////////////////
 	// ////// other public methods ///////////////

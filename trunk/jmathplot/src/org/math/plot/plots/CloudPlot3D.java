@@ -11,6 +11,7 @@ import org.math.plot.FrameView;
 import org.math.plot.Plot3DPanel;
 import org.math.plot.PlotPanel;
 import org.math.plot.render.AbstractDrawer;
+import org.math.plot.utils.Array;
 
 public class CloudPlot3D extends Plot {
 
@@ -30,7 +31,7 @@ public class CloudPlot3D extends Plot {
 
 	double[][] botSE;
 
-	double[] width_constant = { -1, -1 };
+	double[] width_constant = { -1, -1, -1 };
 
 	double[][] XY;
 
@@ -75,14 +76,14 @@ public class CloudPlot3D extends Plot {
 			botSW = new double[XY.length][];
 			botSE = new double[XY.length][];
 			for (int i = 0; i < XY.length; i++) {
-				topNW[i] = new double[] { XY[i][0] - width_constant[0] / 2, XY[i][1] + width_constant[1] / 2, XY[i][2] + width_constant[1] / 2 };
-				topNE[i] = new double[] { XY[i][0] + width_constant[0] / 2, XY[i][1] + width_constant[1] / 2, XY[i][2] + width_constant[1] / 2 };
-				topSW[i] = new double[] { XY[i][0] - width_constant[0] / 2, XY[i][1] - width_constant[1] / 2, XY[i][2] + width_constant[1] / 2 };
-				topSE[i] = new double[] { XY[i][0] + width_constant[0] / 2, XY[i][1] - width_constant[1] / 2, XY[i][2] + width_constant[1] / 2 };
-				botNW[i] = new double[] { XY[i][0] - width_constant[0] / 2, XY[i][1] + width_constant[1] / 2, XY[i][2] - width_constant[1] / 2 };
-				botNE[i] = new double[] { XY[i][0] + width_constant[0] / 2, XY[i][1] + width_constant[1] / 2, XY[i][2] - width_constant[1] / 2 };
-				botSW[i] = new double[] { XY[i][0] - width_constant[0] / 2, XY[i][1] - width_constant[1] / 2, XY[i][2] - width_constant[1] / 2 };
-				botSE[i] = new double[] { XY[i][0] + width_constant[0] / 2, XY[i][1] - width_constant[1] / 2, XY[i][2] - width_constant[1] / 2 };
+				topNW[i] = new double[] { XY[i][0] - width_constant[0] / 2, XY[i][1] + width_constant[1] / 2, XY[i][2] + width_constant[2] / 2 };
+				topNE[i] = new double[] { XY[i][0] + width_constant[0] / 2, XY[i][1] + width_constant[1] / 2, XY[i][2] + width_constant[2] / 2 };
+				topSW[i] = new double[] { XY[i][0] - width_constant[0] / 2, XY[i][1] - width_constant[1] / 2, XY[i][2] + width_constant[2] / 2 };
+				topSE[i] = new double[] { XY[i][0] + width_constant[0] / 2, XY[i][1] - width_constant[1] / 2, XY[i][2] + width_constant[2] / 2 };
+				botNW[i] = new double[] { XY[i][0] - width_constant[0] / 2, XY[i][1] + width_constant[1] / 2, XY[i][2] - width_constant[2] / 2 };
+				botNE[i] = new double[] { XY[i][0] + width_constant[0] / 2, XY[i][1] + width_constant[1] / 2, XY[i][2] - width_constant[2] / 2 };
+				botSW[i] = new double[] { XY[i][0] - width_constant[0] / 2, XY[i][1] - width_constant[1] / 2, XY[i][2] - width_constant[2] / 2 };
+				botSE[i] = new double[] { XY[i][0] + width_constant[0] / 2, XY[i][1] - width_constant[1] / 2, XY[i][2] - width_constant[2] / 2 };
 			}
 		}
 	}
@@ -120,6 +121,17 @@ public class CloudPlot3D extends Plot {
 		return XY;
 	}
 
+        
+        
+    @Override
+    public double[][] getBounds() {
+        double[][] b = new double[][]{Array.min(XY), Array.max(XY)};
+        for (int i = 0; i < b[0].length; i++) {
+            b[0][i] = b[0][i] - width_constant[i] / 2;
+            b[1][i] = b[1][i] + width_constant[i] / 2;
+        }
+        return b;
+    } 
 	public double[] isSelected(int[] screenCoordTest, AbstractDrawer draw) {
 		for (int i = 0; i < XY.length; i++) {
 			int[] screenCoord = draw.project(XY[i]);

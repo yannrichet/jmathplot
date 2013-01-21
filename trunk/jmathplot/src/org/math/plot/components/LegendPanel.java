@@ -105,14 +105,14 @@ public class LegendPanel extends JPanel implements ComponentListener {
     }
 
     public void note(int i) {
-        if (orientation != INVISIBLE) {
+        if (orientation != INVISIBLE && legends!=null && legends.size()>i) {
             legends.get(i).setBackground(PlotCanvas.NOTE_COLOR);
             legends.get(i).name.setForeground(plotPanel.getBackground());
         }
     }
 
     public void nonote(int i) {
-        if (orientation != INVISIBLE) {
+        if (orientation != INVISIBLE && legends!=null && legends.size()>i) {
             legends.get(i).setBackground(plotPanel.getBackground());
             legends.get(i).name.setForeground(PlotCanvas.NOTE_COLOR);
         }
