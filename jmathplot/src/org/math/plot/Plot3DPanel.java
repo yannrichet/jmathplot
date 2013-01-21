@@ -15,6 +15,11 @@ public class Plot3DPanel extends PlotPanel {
 
     private static final long serialVersionUID = 1L;
 
+    public void setDefaultZoom(double zoom_factor) {
+        ((Plot3DCanvas) plotCanvas).setDefaultZoom(zoom_factor);
+        repaint();
+    }
+
     public Plot3DPanel() {
         super(new Plot3DCanvas());
     }

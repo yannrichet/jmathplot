@@ -176,6 +176,17 @@ public abstract class PlotPanel extends JPanel {
         addPlotToolBar(location);
     }
 
+    public PlotToolBar getPlotToolBar() {
+        return plotToolBar;
+    }
+
+    public void setAdjustBounds(boolean adjust) {
+        plotCanvas.setAdjustBounds(adjust);
+        if (plotToolBar != null) {
+            plotToolBar.ajustBoundsChanged();
+        }
+    }
+
     // ///////////////////////////////////////////
     // ////// set actions ////////////////////////
     // ///////////////////////////////////////////

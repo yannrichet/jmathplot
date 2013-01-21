@@ -17,7 +17,6 @@ public abstract class Plot implements Plotable, Noteable, Editable {
     public boolean visible = true;
     public LinkedList<LayerPlot> layers;
     public boolean noted = false;
-
     //public boolean forcenoted = false;
     public int note_precision = 5;
 
@@ -28,6 +27,10 @@ public abstract class Plot implements Plotable, Noteable, Editable {
 
     }
 
+    public void clearLayers() {
+        layers.clear();
+    }
+    
     public void addLayer(LayerPlot q) {
         layers.add(q);
     }
@@ -81,6 +84,15 @@ public abstract class Plot implements Plotable, Noteable, Editable {
 
     public abstract double[][] getData();
 
+    public double[] getBounds(int axis) {
+        return Array.getColumnCopy(getBounds(), axis);
+    }
+
+    /**This method should be abstract, but for backward compatibility, here is a basic impl.*/
+    public double[][] getBounds() {
+    return Array.mergeRows(Array.min(getData()),Array.max(getData()));
+    }
+
     public void setVisible(boolean v) {
         visible = v;
     }
@@ -122,9 +134,9 @@ public abstract class Plot implements Plotable, Noteable, Editable {
 
         draw.setColor(PlotCanvas.NOTE_COLOR);
         draw.drawCoordinate(coordNoted);
-        draw.drawText(Array.cat("\n",draw.canvas.reverseMapedData(coordNoted)), coordNoted);
-        }
-          
+        draw.drawText(Array.cat("\n", draw.canvas.reverseMapedData(coordNoted)), coordNoted);
+    }
+
     public abstract void plot(AbstractDrawer draw, Color c);
 
     public void plot(AbstractDrawer draw) {
@@ -142,7 +154,7 @@ public abstract class Plot implements Plotable, Noteable, Editable {
     }
 
     public void edit(Object src) {
-        ((PlotCanvas) src).displayDatasFrame(((PlotCanvas) src).getPlotIndex(this));
+        ((PlotCanvas) src).displayDataFrame(((PlotCanvas) src).getPlotIndex(this));
     }
 
     public void editnote(AbstractDrawer draw) {

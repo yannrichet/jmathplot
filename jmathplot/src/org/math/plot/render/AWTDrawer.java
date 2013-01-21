@@ -3,6 +3,7 @@
  */
 package org.math.plot.render;
 
+import org.math.plot.utils.FastMath;
 import java.awt.*;
 import java.awt.font.*;
 import java.awt.geom.*;
@@ -246,8 +247,8 @@ public abstract class AWTDrawer extends AbstractDrawer {
                 comp2D.drawLine(sC[0] + dot_radius, sC[1] - dot_radius, sC[0] - dot_radius, sC[1] + dot_radius);
                 break;
             case PATTERN_DOT:
-                int yoffset = (int) Math.ceil(dot_pattern.length / 2.0);
-                int xoffset = (int) Math.ceil(dot_pattern[0].length / 2.0);
+                int yoffset = (int) FastMath.ceil(dot_pattern.length / 2.0);
+                int xoffset = (int) FastMath.ceil(dot_pattern[0].length / 2.0);
                 for (int i = 0; i < dot_pattern.length; i++) {
                     for (int j = 0; j < dot_pattern[i].length; j++) {
                         if (dot_pattern[i][j]) // comp2D.setColor(new Color(getColor())

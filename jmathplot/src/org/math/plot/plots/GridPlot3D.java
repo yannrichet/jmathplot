@@ -7,149 +7,160 @@ import java.awt.*;
 
 import org.math.plot.*;
 import org.math.plot.render.*;
+import org.math.plot.utils.Array;
 
 public class GridPlot3D extends Plot {
 
-	double[] X;
+    double[] X;
+    double[] Y;
+    double[][] Z;
+    private double[][] XYZ_list;
+    public boolean draw_lines = true;
+    public boolean fill_shape = true;
 
-	double[] Y;
+    public GridPlot3D(String n, Color c, double[] _X, double[] _Y, double[][] _Z) {
+        super(n, c);
+        X = _X;
+        Y = _Y;
+        Z = _Z;
+        buildXYZ_list();
+    }
 
-	double[][] Z;
+    public void plot(AbstractDrawer draw, Color c) {
+        if (!visible) {
+            return;
+        }
 
-	private double[][] XYZ_list;
+        draw.setColor(c);
 
-	public boolean draw_lines = true;
+        if (draw_lines) {
+            draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
+            for (int i = 0; i < X.length; i++) {
+                for (int j = 0; j < Y.length - 1; j++) {
+                    draw.drawLine(new double[]{X[i], Y[j], Z[j][i]}, new double[]{X[i], Y[j + 1], Z[j + 1][i]});
+                }
+            }
 
-	public boolean fill_shape = true;
+            for (int j = 0; j < Y.length; j++) {
+                for (int i = 0; i < X.length - 1; i++) {
+                    draw.drawLine(new double[]{X[i], Y[j], Z[j][i]}, new double[]{X[i + 1], Y[j], Z[j][i + 1]});
+                }
+            }
+        } else {
+            draw.setDotType(AbstractDrawer.ROUND_DOT);
+            draw.setDotRadius(AbstractDrawer.DEFAULT_DOT_RADIUS);
+            for (int i = 0; i < X.length; i++) {
+                for (int j = 0; j < Y.length; j++) {
+                    draw.drawDot(new double[]{X[i], Y[j], Z[j][i]});
+                }
+            }
+        }
 
-	public GridPlot3D(String n, Color c, double[] _X, double[] _Y, double[][] _Z) {
-		super(n, c);
-		X = _X;
-		Y = _Y;
-		Z = _Z;
-		buildXYZ_list();
-	}
+        if (fill_shape) {
+            for (int j = 0; j < Y.length - 1; j++) {
+                for (int i = 0; i < X.length - 1; i++) {
+                    draw.fillPolygon(0.2f, new double[]{X[i], Y[j], Z[j][i]}, new double[]{X[i + 1], Y[j], Z[j][i + 1]}, new double[]{X[i + 1], Y[j + 1],
+                                Z[j + 1][i + 1]}, new double[]{X[i], Y[j + 1], Z[j + 1][i]});
+                }
+            }
+        }
+    }
 
-	public void plot(AbstractDrawer draw, Color c) {
-		if (!visible)
-			return;
+    private void buildXYZ_list() {
+        XYZ_list = new double[X.length * Y.length][3];
+        for (int i = 0; i < X.length; i++) {
+            for (int j = 0; j < Y.length; j++) {
+                XYZ_list[i + (j) * X.length][0] = X[i];
+                XYZ_list[i + (j) * X.length][1] = Y[j];
+                XYZ_list[i + (j) * X.length][2] = Z[j][i];
+            }
+        }
+    }
 
-		draw.setColor(c);
+    @Override
+    public void setData(double[][] _Z) {
+        Z = _Z;
+        buildXYZ_list();
+    }
 
-		if (draw_lines) {
-			draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
-			for (int i = 0; i < X.length; i++)
-				for (int j = 0; j < Y.length - 1; j++)
-					draw.drawLine(new double[] { X[i], Y[j], Z[j][i] }, new double[] { X[i], Y[j + 1], Z[j + 1][i] });
+    @Override
+    public double[][] getData() {
+        return XYZ_list;
+    }
 
-			for (int j = 0; j < Y.length; j++)
-				for (int i = 0; i < X.length - 1; i++)
-					draw.drawLine(new double[] { X[i], Y[j], Z[j][i] }, new double[] { X[i + 1], Y[j], Z[j][i + 1] });
-		} else {
-			draw.setDotType(AbstractDrawer.ROUND_DOT);
-			draw.setDotRadius(AbstractDrawer.DEFAULT_DOT_RADIUS);
-			for (int i = 0; i < X.length; i++)
-				for (int j = 0; j < Y.length; j++)
-					draw.drawDot(new double[] { X[i], Y[j], Z[j][i] });
-		}
+    @Override
+    public double[][] getBounds() {
+        return new double[][]{{Array.min(X), Array.min(Y), Array.min(Array.min(Z))}, {Array.max(X), Array.max(Y), Array.max(Array.min(Z))}};
+    }
 
-		if (fill_shape) {
-			for (int j = 0; j < Y.length - 1; j++)
-				for (int i = 0; i < X.length - 1; i++)
-					draw.fillPolygon(0.2f,new double[] { X[i], Y[j], Z[j][i] }, new double[] { X[i + 1], Y[j], Z[j][i + 1] }, new double[] { X[i + 1], Y[j + 1],
-							Z[j + 1][i + 1] }, new double[] { X[i], Y[j + 1], Z[j + 1][i] });
-		}
-	}
+    public void setDataZ(double[][] _Z) {
+        Z = _Z;
+        buildXYZ_list();
+    }
 
-	private void buildXYZ_list() {
-		XYZ_list = new double[X.length * Y.length][3];
-		for (int i = 0; i < X.length; i++) {
-			for (int j = 0; j < Y.length; j++) {
-				XYZ_list[i + (j) * X.length][0] = X[i];
-				XYZ_list[i + (j) * X.length][1] = Y[j];
-				XYZ_list[i + (j) * X.length][2] = Z[j][i];
-			}
-		}
-	}
+    public double[][] getDataZ() {
+        return Z;
+    }
 
-	@Override
-	public void setData(double[][] _Z) {
-		Z = _Z;
-		buildXYZ_list();
-	}
+    public void setDataX(double[] _X) {
+        X = _X;
+        buildXYZ_list();
+    }
 
-	@Override
-	public double[][] getData() {
-		return XYZ_list;
-	}
+    public double[] getDataX() {
+        return X;
+    }
 
-	public void setDataZ(double[][] _Z) {
-		Z = _Z;
-		buildXYZ_list();
-	}
+    public void setDataY(double[] _Y) {
+        Y = _Y;
+        buildXYZ_list();
+    }
 
-	public double[][] getDataZ() {
-		return Z;
-	}
+    public double[] getDataY() {
+        return Y;
+    }
 
-	public void setDataX(double[] _X) {
-		X = _X;
-		buildXYZ_list();
-	}
+    public void setDataXYZ(double[] _X, double[] _Y, double[][] _Z) {
+        X = _X;
+        Y = _Y;
+        Z = _Z;
+        buildXYZ_list();
+    }
 
-	public double[] getDataX() {
-		return X;
-	}
+    public double[] isSelected(int[] screenCoordTest, AbstractDrawer draw) {
+        for (int i = 0; i < X.length; i++) {
+            for (int j = 0; j < Y.length; j++) {
+                double[] XY = {X[i], Y[j], Z[j][i]};
+                int[] screenCoord = draw.project(XY);
 
-	public void setDataY(double[] _Y) {
-		Y = _Y;
-		buildXYZ_list();
-	}
+                if ((screenCoord[0] + note_precision > screenCoordTest[0]) && (screenCoord[0] - note_precision < screenCoordTest[0])
+                        && (screenCoord[1] + note_precision > screenCoordTest[1]) && (screenCoord[1] - note_precision < screenCoordTest[1])) {
+                    return XY;
+                }
+            }
+        }
+        return null;
+    }
 
-	public double[] getDataY() {
-		return Y;
-	}
+    public static void main(String[] args) {
 
-	public void setDataXYZ(double[] _X, double[] _Y, double[][] _Z) {
-		X = _X;
-		Y = _Y;
-		Z = _Z;
-		buildXYZ_list();
-	}
+        int n = 14;
+        int m = 16;
+        Plot3DPanel p = new Plot3DPanel();
+        double[] X = new double[n];
+        double[] Y = new double[m];
+        double[][] Z = new double[m][n];
 
-	public double[] isSelected(int[] screenCoordTest, AbstractDrawer draw) {
-		for (int i = 0; i < X.length; i++) {
-			for (int j = 0; j < Y.length; j++) {
-				double[] XY = { X[i], Y[j], Z[j][i] };
-				int[] screenCoord = draw.project(XY);
+        for (int i = 0; i < X.length; i++) {
+            X[i] = 3+i / (double) X.length;
+            for (int j = 0; j < Y.length; j++) {
+                Y[j] = 5+j / (double) Y.length;
+                Z[j][i] = Math.exp(X[i]) + Y[j];
+            }
+        }
+        p.addGridPlot("toto", X, Y, Z);
 
-				if ((screenCoord[0] + note_precision > screenCoordTest[0]) && (screenCoord[0] - note_precision < screenCoordTest[0])
-						&& (screenCoord[1] + note_precision > screenCoordTest[1]) && (screenCoord[1] - note_precision < screenCoordTest[1]))
-					return XY;
-			}
-		}
-		return null;
-	}
-
-	public static void main(String[] args) {
-
-		int n = 14;
-		int m = 16;
-		Plot3DPanel p = new Plot3DPanel();
-		double[] X = new double[n];
-		double[] Y = new double[m];
-		double[][] Z = new double[m][n];
-
-		for (int i = 0; i < X.length; i++) {
-			X[i] = i / (double) X.length;
-			for (int j = 0; j < Y.length; j++) {
-				Y[j] = j / (double) Y.length;
-				Z[j][i] = Math.exp(X[i]) + Y[j];
-			}
-		}
-		p.addGridPlot("toto", X, Y, Z);
-
-		p.setLegendOrientation(PlotPanel.SOUTH);
-		new FrameView(p);
-	}
+        p.setLegendOrientation(PlotPanel.SOUTH);
+        new FrameView(p);
+    }
 }
