@@ -48,6 +48,7 @@
             </fileset>
         </unjar>
         <jar jarfile="${dist}/${ant.project.name}-${TODAY}.jar" basedir="${build}" />
+        <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build}" />
     </target>
 
     <target name="clean" description="clean up">
