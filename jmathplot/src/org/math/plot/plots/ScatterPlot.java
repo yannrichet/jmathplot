@@ -8,6 +8,7 @@ import org.math.plot.*;
 import org.math.plot.canvas.PlotCanvas;
 import org.math.plot.render.*;
 import org.math.plot.utils.Array;
+import org.math.plot.utils.FastMath;
 
 public class ScatterPlot extends Plot {
 
@@ -72,6 +73,7 @@ public class ScatterPlot extends Plot {
 
     @Override
     public void setData(double[][] d) {
+        datapanel = null;
         XY = d;
     }
 
@@ -79,17 +81,17 @@ public class ScatterPlot extends Plot {
     public double[][] getData() {
         return XY;
     }
-    
+
     @Override
     public double[][] getBounds() {
-        return Array.mergeRows(Array.min(XY),Array.max(XY));
+        return Array.mergeRows(Array.min(XY), Array.max(XY));
     }
 
     public double[] isSelected(int[] screenCoordTest, AbstractDrawer draw) {
         for (int i = 0; i < XY.length; i++) {
             int[] screenCoord = draw.project(XY[i]);
 
-            if ((screenCoord[0] + note_precision > screenCoordTest[0]) && (screenCoord[0] - note_precision < screenCoordTest[0]) && (screenCoord[1] + note_precision > screenCoordTest[1]) && (screenCoord[1] - note_precision < screenCoordTest[1])) {
+            if (FastMath.abs(screenCoord[0] - screenCoordTest[0]) < note_precision && FastMath.abs(screenCoord[1] - screenCoordTest[1]) < note_precision) {
                 return XY[i];
             }
         }
@@ -114,16 +116,16 @@ public class ScatterPlot extends Plot {
         String[] tags = null;
         for (int i = 0; i < 3; i++) {
             double[][] XYZ = new double[10][3];
-             tags = new String[10];
+            tags = new String[10];
             for (int j = 0; j < XYZ.length; j++) {
-                XYZ[j][0] = /*1 +*/ 2.5*Math.random();
-                XYZ[j][1] = /*100 **/  Math.random();
+                XYZ[j][0] = /*1 +*/ 2.5 * Math.random();
+                XYZ[j][1] = /*100 **/ Math.random();
                 XYZ[j][2] = /*0.0001 **/ Math.random();
-                tags[j] = "tags "+ j;
+                tags[j] = "tags " + j;
             }
             p.addScatterPlot("toto" + i, XYZ);
         }
-        ((ScatterPlot)p.getPlot(0)).setTags(tags);
+        ((ScatterPlot) p.getPlot(0)).setTags(tags);
 
         p.setLegendOrientation(PlotPanel.SOUTH);
         new FrameView(p).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -133,6 +135,7 @@ public class ScatterPlot extends Plot {
      * @param tags the tags to set
      */
     public void setTags(String[] tags) {
+        datapanel = null;
         this.tags = tags;
     }
 
@@ -149,7 +152,7 @@ public class ScatterPlot extends Plot {
             for (int i = 0; i < XY.length; i++) {
                 if (tags.length > i) {
                     if (Array.equals(XY[i], coordNoted)) {
-                        draw.drawText(tags[i], coordNoted);
+                        draw.drawShadowedText(tags[i], .5f, coordNoted);
                     }
                 }
             }

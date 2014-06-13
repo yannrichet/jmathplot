@@ -85,6 +85,15 @@ public class Array {
         return o;
     }
 
+    public static String cat(String separator, double[] array) {
+        String o = "";
+        for (int i = 0; i < array.length - 1; i++) {
+            o += array[i] + separator;
+        }
+        o += array[array.length - 1];
+        return o;
+    }
+    
     public static String cat(String columnsSeparator, String rowsSeparator, Object[][] array) {
         String o = "";
         for (int i = 0; i < array.length - 1; i++) {
@@ -285,7 +294,7 @@ public class Array {
         }
         return array;
     }
-
+    
     public static double[] merge(double[]... x) {
         int[] xlength_array = new int[x.length];
         xlength_array[0] = x[0].length;

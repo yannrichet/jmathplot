@@ -17,7 +17,7 @@ public abstract class Projection {
         draw = _draw;
     }
 
-    protected void initBaseCoordsProjection(boolean reset) {
+    public void initBaseCoordsProjection(boolean reset) {
         // System.out.println("Projection.initBaseCoordsProjection");
         if (baseScreenCoords == null) {
             baseScreenCoords = new int[draw.canvas.base.baseCoords.length][2];
@@ -46,13 +46,23 @@ public abstract class Projection {
         }
     }
     // This stores the whole zooming ratio along all dilate calls.
-    double[] totalScreenRatio = new double[]{1, 1};
+    public double[] totalScreenRatio = new double[]{1, 1};
+    public double[] maxScreenRatio = new double[]{1, 1};
+    public double[] minScreenRatio = new double[]{.01, .01};
 
     public void dilate(int[] screenOrigin, double[] screenRatio) {
         // System.out.println("screenOrigin = "+screenOrigin[0]+" ,
         // "+screenOrigin[1]);
         // System.out.println("screenRatio = "+screenRatio[0]+" ,
         // "+screenRatio[1]);
+
+        // Update the zooming ratio history
+        if (totalScreenRatio[0] * screenRatio[0] > maxScreenRatio[0]) screenRatio[0] = maxScreenRatio[0]/totalScreenRatio[0];
+        if (totalScreenRatio[1] * screenRatio[1] > maxScreenRatio[1]) screenRatio[1] = maxScreenRatio[1]/totalScreenRatio[1];
+
+        if (totalScreenRatio[0] * screenRatio[0] < minScreenRatio[0]) screenRatio[0] = minScreenRatio[0]/totalScreenRatio[0];
+        if (totalScreenRatio[1] * screenRatio[1] < minScreenRatio[1]) screenRatio[1] = minScreenRatio[1]/totalScreenRatio[1];
+        
         for (int i = 0; i < draw.canvas.base.dimension + 1; i++) {
             // System.out.println("baseScreenCoords["+i+"] =
             // "+baseScreenCoords[i][0]+" , "+baseScreenCoords[i][1]);

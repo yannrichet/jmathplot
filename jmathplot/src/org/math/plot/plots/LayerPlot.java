@@ -3,6 +3,8 @@
  */
 package org.math.plot.plots;
 
+import org.math.plot.DataPanel;
+import org.math.plot.canvas.PlotCanvas;
 import org.math.plot.render.*;
 
 public abstract class LayerPlot extends Plot {
@@ -21,5 +23,10 @@ public abstract class LayerPlot extends Plot {
     @Override
     public double[][] getBounds() {
         return plot.getBounds();
+    }
+
+    @Override
+    public DataPanel getDataPanel(PlotCanvas plotCanvas) {
+        return null;
     }
 }

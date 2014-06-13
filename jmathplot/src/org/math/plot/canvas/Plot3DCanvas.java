@@ -27,11 +27,11 @@ public class Plot3DCanvas extends PlotCanvas {
         ActionMode = ROTATION;
     }
 
-        public Plot3DCanvas(Base b) {
-        super(b, new BasePlot(b, "X","Y","Z"));
+    public Plot3DCanvas(Base b) {
+        super(b, new BasePlot(b, "X", "Y", "Z"));
         ActionMode = ROTATION;
     }
-    
+
     public Plot3DCanvas(Base b, BasePlot bp) {
         super(b, bp);
         ActionMode = ROTATION;
@@ -144,38 +144,25 @@ public class Plot3DCanvas extends PlotCanvas {
 
     public void mouseDragged(MouseEvent e) {
         //System.out.println("PlotCanvas.mouseDragged");
+        if (ActionMode == ROTATION) {
+            dragging = true;
+            /*
+             * System.out.println("PlotCanvas.mouseDragged"); System.out.println("
+             * mouseClick = [" + mouseClick[0] + " " + mouseClick[1] + "]");
+             * System.out.println(" mouseCurent = [" + mouseCurent[0] + " " +
+             * mouseCurent[1] + "]");
+             */
+            mouseCurent[0] = e.getX();
+            mouseCurent[1] = e.getY();
+            e.consume();
 
-        dragging = true;
-        /*
-         * System.out.println("PlotCanvas.mouseDragged"); System.out.println("
-         * mouseClick = [" + mouseClick[0] + " " + mouseClick[1] + "]");
-         * System.out.println(" mouseCurent = [" + mouseCurent[0] + " " +
-         * mouseCurent[1] + "]");
-         */
-        mouseCurent[0] = e.getX();
-        mouseCurent[1] = e.getY();
-        e.consume();
-        switch (ActionMode) {
-            case TRANSLATION:
-                draw.translate(mouseCurent[0] - mouseClick[0], mouseCurent[1] - mouseClick[1]);
-                mouseClick[0] = mouseCurent[0];
-                mouseClick[1] = mouseCurent[1];
-                repaint();
-                break;
-            case ZOOM:
-                repaint();
-                Graphics gcomp = getGraphics();
-                gcomp.setColor(Color.black);
-                gcomp.drawRect(FastMath.min(mouseClick[0], mouseCurent[0]), FastMath.min(mouseClick[1], mouseCurent[1]), FastMath.abs(mouseCurent[0] - mouseClick[0]), FastMath.abs(mouseCurent[1]
-                        - mouseClick[1]));
-                break;
-            case ROTATION:
-                int[] t = new int[]{mouseCurent[0] - mouseClick[0], mouseCurent[1] - mouseClick[1]};
-                ((AWTDrawer3D) draw).rotate(t, new int[]{getWidth(), getHeight()});
-                mouseClick[0] = mouseCurent[0];
-                mouseClick[1] = mouseCurent[1];
-                repaint();
-                break;
+            int[] t = new int[]{mouseCurent[0] - mouseClick[0], mouseCurent[1] - mouseClick[1]};
+            ((AWTDrawer3D) draw).rotate(t, new int[]{getWidth(), getHeight()});
+            mouseClick[0] = mouseCurent[0];
+            mouseClick[1] = mouseCurent[1];
+            repaint();
+        } else {
+            super.mouseDragged(e);
         }
     }
 

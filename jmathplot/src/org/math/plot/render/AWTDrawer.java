@@ -1,5 +1,7 @@
 /*
  * Created on 31 mai 2005 by richet
+ * Changed on 6/13/2014 by Jerry Dietrich 
+ * Contact info ballooninternet@cox.net
  */
 package org.math.plot.render;
 
@@ -131,12 +133,63 @@ public abstract class AWTDrawer extends AbstractDrawer {
         x -= (int) (w * text_Eastoffset);
         y += (int) (h * text_Northoffset);
 
+        int wc = (int) (w * FastMath.cos(text_angle) + h * FastMath.sin(text_angle));
+        int hc = (int) (h * FastMath.cos(text_angle) + w * FastMath.sin(text_angle));
+        if (!comp2D.hitClip(x, y, wc, hc)) {
+            return;
+        }
+
         if (text_angle != 0) {
             comp2D.rotate(text_angle, x + w / 2, y - h / 2);
         }
 
+        int tmpY = y;
         String[] lines = label.split("\n");
         for (int i = 0; i < lines.length; i++) {
+            comp2D.drawString(lines[i], x, tmpY);
+            tmpY += h;
+        }
+
+        if (text_angle != 0) {
+            comp2D.rotate(-text_angle, x + w / 2, y - h / 2);
+        }
+    }
+
+    public void drawShadowedText(String label, float alpha, double... pC) {
+        int[] sC = projection.screenProjection(pC);
+
+        // Corner offset adjustment : Text Offset is used Here
+        FontRenderContext frc = comp2D.getFontRenderContext();
+        Font font1 = comp2D.getFont();
+        int x = sC[0];
+        int y = sC[1];
+        double w = font1.getStringBounds(label, frc).getWidth();
+        double h = font1.getSize2D();
+        x -= (int) (w * text_Eastoffset);
+        y += (int) (h * text_Northoffset);
+
+        int wc = (int) (w * FastMath.cos(text_angle) + h * FastMath.sin(text_angle));
+        int hc = (int) (h * FastMath.cos(text_angle) + w * FastMath.sin(text_angle));
+        if (!comp2D.hitClip(x, y, wc, hc)) {
+            return;
+        }
+
+        if (text_angle != 0) {
+            comp2D.rotate(text_angle, x + w / 2, y - h / 2);
+        }
+
+        Composite cs = comp2D.getComposite();
+        Color c = comp2D.getColor();
+
+        String[] lines = label.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+
+            comp2D.setColor(Color.white);
+            comp2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+            comp2D.fillRect(x, y - (int) h, (int) w, (int) h);
+            comp2D.setComposite(cs);
+            comp2D.setColor(c);
+
             comp2D.drawString(lines[i], x, y);
             y += h;
         }
@@ -164,6 +217,12 @@ public abstract class AWTDrawer extends AbstractDrawer {
         double h = font1.getSize2D();
         x -= (int) (w * text_Eastoffset);
         y += (int) (h * text_Northoffset);
+
+        int wc = (int) (w * FastMath.cos(text_angle) + h * FastMath.sin(text_angle));
+        int hc = (int) (h * FastMath.cos(text_angle) + w * FastMath.sin(text_angle));
+        if (!comp2D.hitClip(x, y, wc, hc)) {
+            return;
+        }
 
         if (text_angle != 0) {
             comp2D.rotate(text_angle, x + w / 2, y - h / 2);
@@ -209,55 +268,58 @@ public abstract class AWTDrawer extends AbstractDrawer {
     }
 
     private void drawLine(int[]... c) {
-        Stroke s = null;
-        switch (line_type) {
-            case CONTINOUS_LINE:
-                s = new BasicStroke(line_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
-                break;
-            case DOTTED_LINE:
-                s = new BasicStroke(line_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1f, new float[]{2f}, 0f);
-                break;
-        }
-        comp2D.setStroke(s);
-
+        int minx = c[0][0], miny = c[0][1], maxx = c[0][0] + 1, maxy = c[0][1] + 1;
         int[] x = new int[c.length];
         for (int i = 0; i < c.length; i++) {
             x[i] = c[i][0];
+            minx = FastMath.min(minx, x[i]);
+            maxx = FastMath.max(maxx, x[i]);
         }
         int[] y = new int[c.length];
         for (int i = 0; i < c.length; i++) {
             y[i] = c[i][1];
+            miny = FastMath.min(miny, y[i]);
+            maxy = FastMath.max(maxy, y[i]);
         }
-        comp2D.drawPolyline(x, y, c.length);
+
+        if (comp2D.hitClip(minx, miny, maxx - minx, maxy - miny)) {
+            Stroke s = null;
+            switch (line_type) {
+                case CONTINOUS_LINE:
+                    s = new BasicStroke(line_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
+                    break;
+                case DOTTED_LINE:
+                    s = new BasicStroke(line_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1f, new float[]{2f}, 0f);
+                    break;
+            }
+            comp2D.setStroke(s);
+            comp2D.drawPolyline(x, y, c.length);
+        }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.math.plot.render.AbstractDrawer#drawDot(double[])
-     */
-    public void drawDot(double... pC) {
+    public void drawRoundDot(double... pC) {
         int[] sC = projection.screenProjection(pC);
-        switch (dot_type) {
-            case ROUND_DOT:
-                comp2D.fillOval(sC[0] - dot_radius, sC[1] - dot_radius, 2 * dot_radius, 2 * dot_radius);
-                break;
-            case CROSS_DOT:
-                comp2D.drawLine(sC[0] - dot_radius, sC[1] - dot_radius, sC[0] + dot_radius, sC[1] + dot_radius);
-                comp2D.drawLine(sC[0] + dot_radius, sC[1] - dot_radius, sC[0] - dot_radius, sC[1] + dot_radius);
-                break;
-            case PATTERN_DOT:
-                int yoffset = (int) FastMath.ceil(dot_pattern.length / 2.0);
-                int xoffset = (int) FastMath.ceil(dot_pattern[0].length / 2.0);
-                for (int i = 0; i < dot_pattern.length; i++) {
-                    for (int j = 0; j < dot_pattern[i].length; j++) {
-                        if (dot_pattern[i][j]) // comp2D.setColor(new Color(getColor())
-                        {
-                            comp2D.fillRect(sC[0] - xoffset + j, sC[1] - yoffset + i, 1, 1);
-                        }
-                    }
+        comp2D.fillOval(sC[0] - dot_radius, sC[1] - dot_radius, 2 * dot_radius, 2 * dot_radius);
+    }
+
+    public void drawCrossDot(double... pC) {
+        int[] sC = projection.screenProjection(pC);
+        comp2D.drawLine(sC[0] - dot_radius, sC[1] - dot_radius, sC[0] + dot_radius, sC[1] + dot_radius);
+        comp2D.drawLine(sC[0] + dot_radius, sC[1] - dot_radius, sC[0] - dot_radius, sC[1] + dot_radius);
+    }
+
+    public void drawPatternDot(double... pC) {
+        int[] sC = projection.screenProjection(pC);
+        int yoffset = (int) FastMath.ceil(dot_pattern.length / 2.0);
+        int xoffset = (int) FastMath.ceil(dot_pattern[0].length / 2.0);
+        for (int i = 0; i < dot_pattern.length; i++) {
+            for (int j = 0; j < dot_pattern[i].length; j++) {
+                if (dot_pattern[i][j]) // comp2D.setColor(new Color(getColor())
+                {
+                    //System.err.println("comp2D.fillRect");
+                    comp2D.fillRect(sC[0] - xoffset + j, sC[1] - yoffset + i, 1, 1);
                 }
-                break;
+            }
         }
     }
 
@@ -272,15 +334,23 @@ public abstract class AWTDrawer extends AbstractDrawer {
             c[i] = projection.screenProjection(pC[i]);
         }
 
+        int minx = c[0][0], miny = c[0][1], maxx = c[0][0] + 1, maxy = c[0][1] + 1;
         int[] x = new int[c.length];
         for (int i = 0; i < c.length; i++) {
             x[i] = c[i][0];
+            minx = FastMath.min(minx, x[i]);
+            maxx = FastMath.max(maxx, x[i]);
         }
         int[] y = new int[c.length];
         for (int i = 0; i < c.length; i++) {
             y[i] = c[i][1];
+            miny = FastMath.min(miny, y[i]);
+            maxy = FastMath.max(maxy, y[i]);
         }
-        comp2D.drawPolygon(x, y, c.length);
+
+        if (comp2D.hitClip(minx, miny, maxx - minx, maxy - miny)) {
+            comp2D.drawPolygon(x, y, c.length);
+        }
     }
 
     /*
@@ -294,18 +364,25 @@ public abstract class AWTDrawer extends AbstractDrawer {
             c[i] = projection.screenProjection(pC[i]);
         }
 
+        int minx = c[0][0], miny = c[0][1], maxx = c[0][0] + 1, maxy = c[0][1] + 1;
         int[] x = new int[c.length];
         for (int i = 0; i < c.length; i++) {
             x[i] = c[i][0];
+            minx = FastMath.min(minx, x[i]);
+            maxx = FastMath.max(maxx, x[i]);
         }
         int[] y = new int[c.length];
         for (int i = 0; i < c.length; i++) {
             y[i] = c[i][1];
+            miny = FastMath.min(miny, y[i]);
+            maxy = FastMath.max(maxy, y[i]);
         }
-        Composite cs = comp2D.getComposite();
-        comp2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-        comp2D.fillPolygon(x, y, c.length);
-        comp2D.setComposite(cs);
+        if (comp2D.hitClip(minx, miny, maxx - minx, maxy - miny)) {
+            Composite cs = comp2D.getComposite();
+            comp2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+            comp2D.fillPolygon(x, y, c.length);
+            comp2D.setComposite(cs);
+        }
     }
 
     public void drawImage(Image img, float alpha, double[] _xyzSW, double[] _xyzSE, double[] _xyzNW) {
@@ -319,13 +396,13 @@ public abstract class AWTDrawer extends AbstractDrawer {
     }
 
     /*public void drawShape(Shape shape, float alpha, double[] _xyzSW, double[] _xyzSE, double[] _xyzNW) {
-    AffineTransform t = getAffineTransform(shape.getBounds().width,shape.getBounds().height, _xyzSW,  _xyzSE,  _xyzNW);
-    Shape t_shape = t.createTransformedShape(shape);
-    Composite cs = comp2D.getComposite();
-    comp2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-    comp2D.draw(t_shape);
-    comp2D.setComposite(cs);
-    }*/
+     AffineTransform t = getAffineTransform(shape.getBounds().width,shape.getBounds().height, _xyzSW,  _xyzSE,  _xyzNW);
+     Shape t_shape = t.createTransformedShape(shape);
+     Composite cs = comp2D.getComposite();
+     comp2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+     comp2D.draw(t_shape);
+     comp2D.setComposite(cs);
+     }*/
     static boolean isDiff(double[] x, int[] y) {
         return abs(x[0] - y[0]) > 1 || abs(x[1] - y[1]) > 1;
     }
@@ -391,31 +468,30 @@ public abstract class AWTDrawer extends AbstractDrawer {
         // TODO patch for many cases...
 
         /*double[] _cornerSW_tr = new double[2];
-        double[] _cornerSW = { 0, img.getHeight(canvas) };
-        t.transform(_cornerSW, 0, _cornerSW_tr, 0, 1);
+         double[] _cornerSW = { 0, img.getHeight(canvas) };
+         t.transform(_cornerSW, 0, _cornerSW_tr, 0, 1);
         
-        if (isDiff(_cornerSW_tr, cornerSW)) {
-        double[] vectSW_NW_1 = { (double) cornerNW[0] - (double) cornerSW[0], (double) cornerNW[1] - (double) cornerSW[1] };
-        double[] vectSW_NW_2 = { (double) cornerNW[0] - (double) _cornerSW_tr[0], (double) cornerNW[1] - (double) _cornerSW_tr[1] };
+         if (isDiff(_cornerSW_tr, cornerSW)) {
+         double[] vectSW_NW_1 = { (double) cornerNW[0] - (double) cornerSW[0], (double) cornerNW[1] - (double) cornerSW[1] };
+         double[] vectSW_NW_2 = { (double) cornerNW[0] - (double) _cornerSW_tr[0], (double) cornerNW[1] - (double) _cornerSW_tr[1] };
         
-        double normvect_1 = sqrt(sqr(vectSW_NW_1[0]) + sqr(vectSW_NW_1[1]));
-        double normvect_2 = sqrt(sqr(vectSW_NW_1[0]) + sqr(vectSW_NW_1[1]));
+         double normvect_1 = sqrt(sqr(vectSW_NW_1[0]) + sqr(vectSW_NW_1[1]));
+         double normvect_2 = sqrt(sqr(vectSW_NW_1[0]) + sqr(vectSW_NW_1[1]));
         
-        double cos_angle = (((vectSW_NW_1[0] * vectSW_NW_2[0] + vectSW_NW_1[1] * vectSW_NW_2[1]) / (normvect_1 * normvect_2)));
-        double vect = (vectSW_NW_1[0] * vectSW_NW_2[1] - vectSW_NW_1[1] * vectSW_NW_2[0]);
+         double cos_angle = (((vectSW_NW_1[0] * vectSW_NW_2[0] + vectSW_NW_1[1] * vectSW_NW_2[1]) / (normvect_1 * normvect_2)));
+         double vect = (vectSW_NW_1[0] * vectSW_NW_2[1] - vectSW_NW_1[1] * vectSW_NW_2[0]);
         
-        System.out.println(cos_angle + " " + vect + " -> " + toDegrees(acos(cos_angle)));
+         System.out.println(cos_angle + " " + vect + " -> " + toDegrees(acos(cos_angle)));
         
-        //System.out.println(" "+vectSE_NW_1[0]+","+vectSE_NW_1[1]+"  "+vectSE_NW_2[0]+","+vectSE_NW_2[1]);
-        AffineTransform t2 = new AffineTransform();
-        if (vect > 0)
-        t2.rotate(acos(cos_angle), cornerNW[0], cornerNW[1]);
-        else
-        t2.rotate(-acos(cos_angle), cornerNW[0], cornerNW[1]);
-        t.preConcatenate(t2);
+         //System.out.println(" "+vectSE_NW_1[0]+","+vectSE_NW_1[1]+"  "+vectSE_NW_2[0]+","+vectSE_NW_2[1]);
+         AffineTransform t2 = new AffineTransform();
+         if (vect > 0)
+         t2.rotate(acos(cos_angle), cornerNW[0], cornerNW[1]);
+         else
+         t2.rotate(-acos(cos_angle), cornerNW[0], cornerNW[1]);
+         t.preConcatenate(t2);
         
-        }*/
-
+         }*/
         return t;
     }
 }

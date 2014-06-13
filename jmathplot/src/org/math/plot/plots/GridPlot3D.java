@@ -79,6 +79,7 @@ public class GridPlot3D extends Plot {
 
     @Override
     public void setData(double[][] _Z) {
+        datapanel=null;
         Z = _Z;
         buildXYZ_list();
     }
@@ -94,8 +95,7 @@ public class GridPlot3D extends Plot {
     }
 
     public void setDataZ(double[][] _Z) {
-        Z = _Z;
-        buildXYZ_list();
+        setData(_Z);
     }
 
     public double[][] getDataZ() {
@@ -103,6 +103,7 @@ public class GridPlot3D extends Plot {
     }
 
     public void setDataX(double[] _X) {
+        datapanel=null;
         X = _X;
         buildXYZ_list();
     }
@@ -112,6 +113,7 @@ public class GridPlot3D extends Plot {
     }
 
     public void setDataY(double[] _Y) {
+        datapanel=null;
         Y = _Y;
         buildXYZ_list();
     }
@@ -121,6 +123,7 @@ public class GridPlot3D extends Plot {
     }
 
     public void setDataXYZ(double[] _X, double[] _Y, double[][] _Z) {
+        datapanel=null;
         X = _X;
         Y = _Y;
         Z = _Z;
@@ -152,9 +155,9 @@ public class GridPlot3D extends Plot {
         double[][] Z = new double[m][n];
 
         for (int i = 0; i < X.length; i++) {
-            X[i] = 3+i / (double) X.length;
+            X[i] = 3 + i / (double) X.length;
             for (int j = 0; j < Y.length; j++) {
-                Y[j] = 5+j / (double) Y.length;
+                Y[j] = 5 + j / (double) Y.length;
                 Z[j][i] = Math.exp(X[i]) + Y[j];
             }
         }
