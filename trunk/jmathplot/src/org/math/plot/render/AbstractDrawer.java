@@ -6,7 +6,6 @@ package org.math.plot.render;
 import java.awt.*;
 
 import org.math.plot.canvas.*;
-import org.math.plot.plotObjects.Label;
 import org.math.plot.utils.*;
 
 public abstract class AbstractDrawer {
@@ -48,6 +47,7 @@ public abstract class AbstractDrawer {
      */
     public void initGraphics(Graphics2D _comp2D) {
         comp2D = _comp2D;
+        comp2D.setPaintMode();
     }
 
     public Graphics2D getGraphics2D() {
@@ -193,7 +193,7 @@ public abstract class AbstractDrawer {
     public abstract void dilate(int[] screenOrigin, double[] screenRatio);
 
     public void drawCoordinate(double... pC) {
-        for (int i = 0; i < pC.length; i++) {
+        for (int i = 0; i < canvas.base.dimension; i++) {
             double[] axeprojection = Array.copy(pC);
             axeprojection[i] = canvas.base.baseCoords[0][i];
             drawLine(pC, axeprojection);
@@ -204,6 +204,8 @@ public abstract class AbstractDrawer {
     }
 
     public abstract void drawText(String label, double... pC);
+    
+    public abstract void drawShadowedText(String label,float alpha, double... pC);
 
     public abstract void drawTextBase(String label, double... rC);
 
@@ -211,7 +213,25 @@ public abstract class AbstractDrawer {
 
     public abstract void drawLine(double[]... pC);
 
-    public abstract void drawDot(double... pC);
+    public void drawDot(double... pC) {
+        switch (dot_type) {
+            case ROUND_DOT:
+                drawRoundDot(pC);
+                break;
+            case CROSS_DOT:
+                drawCrossDot(pC);
+                break;
+            case PATTERN_DOT:
+                drawPatternDot(pC);
+                break;
+        }
+    }
+
+    public abstract void drawRoundDot(double... pC);
+
+    public abstract void drawCrossDot(double... pC);
+
+    public abstract void drawPatternDot(double... pC);
 
     public abstract void drawPolygon(double[]... pC);
 

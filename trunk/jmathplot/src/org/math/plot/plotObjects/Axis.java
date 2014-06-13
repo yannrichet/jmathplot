@@ -22,6 +22,8 @@ import org.math.plot.utils.FastMath;
  * BSD License
  * 
  * @author Yann RICHET
+ * Changed on 6/13/2014 by Jerry Dietrich 
+ * Contact info ballooninternet@cox.net
  */
 
 public class Axis implements Plotable, BaseDependant, Editable {
@@ -313,8 +315,8 @@ public class Axis implements Plotable, BaseDependant, Editable {
 		for (int i = 0; i < lightLabels.length; i++) {
 
 			double[] labelCoord = new double[base.dimension];
-			System.arraycopy(base.getCoords()[index + 1], 0, labelCoord, 0,
-					base.dimension);
+			System.arraycopy(base.getCoords()[index + 1], 0, labelCoord, 0,	base.dimension);
+						
 			labelCoord[index] = labelsSlicing[i];
 
 			if (base.getAxeScale(index).startsWith(Base.LINEAR)
@@ -486,7 +488,7 @@ public class Axis implements Plotable, BaseDependant, Editable {
 				double[] end_tmp = new double[base.dimension];
 
 				System.arraycopy(origin, 0, origin_tmp, 0, base.dimension);
-				System.arraycopy(origin, 0, end_tmp, 0, base.dimension);
+				System.arraycopy(end, 0, end_tmp, 0, base.dimension);
 
 				end_tmp[i2] = base.getCoords()[i2 + 1][i2];
 				origin_tmp[index] = linesSlicing[j];
@@ -539,7 +541,7 @@ public class Axis implements Plotable, BaseDependant, Editable {
 		if (base.getAxeScale(index).equalsIgnoreCase(Base.LOGARITHM)) {
 			int numPow10 = (int) FastMath.rint((FastMath.log(base.getMaxBounds()[index]
 					/ base.getMinBounds()[index]) / FastMath.log(0)));
-			numPow10 = FastMath.max(numPow10, 1);
+			if (numPow10 < 0 || numPow10 == Integer.MAX_VALUE) numPow10 = 1;
 			double minPow10 = FastMath.rint(FastMath.log(base.getMinBounds()[index])
 					/ FastMath.log(0));
 

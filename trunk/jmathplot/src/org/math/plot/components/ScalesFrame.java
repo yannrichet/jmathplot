@@ -13,6 +13,8 @@ import org.math.plot.plotObjects.*;
  * BSD License
  * 
  * @author Yann RICHET
+ * Changed on 6/13/2014 by Jerry Dietrich 
+ * Contact info ballooninternet@cox.net
  */
 public class ScalesFrame extends JFrame implements WindowFocusListener, WindowListener {
 
@@ -159,9 +161,9 @@ public class ScalesFrame extends JFrame implements WindowFocusListener, WindowLi
             title_field.setText(title);
             
             scaleType = plotCanvas.getAxisScales()[numAxe];
-            log_check.setSelected(scaleType.equals(Base.LOGARITHM));
-            linear_check.setSelected(scaleType.equals(Base.LINEAR));
-            if (scaleType.equals(Base.STRINGS)) {
+            log_check.setSelected(scaleType.equalsIgnoreCase(Base.LOGARITHM));
+            linear_check.setSelected(scaleType.equalsIgnoreCase(Base.LINEAR));
+            if (scaleType.equalsIgnoreCase(Base.STRINGS)) {
                 log_check.setEnabled(false);
                 linear_check.setEnabled(false);
             }

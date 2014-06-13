@@ -1,8 +1,20 @@
 package org.math.plot.plots;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.LinkedList;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
+import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.math.plot.DataPanel;
+import org.math.plot.MatrixTablePanel;
 import org.math.plot.canvas.PlotCanvas;
 import org.math.plot.plotObjects.Editable;
 import org.math.plot.plotObjects.Noteable;
@@ -17,6 +29,7 @@ public abstract class Plot implements Plotable, Noteable, Editable {
     public boolean visible = true;
     public LinkedList<LayerPlot> layers;
     public boolean noted = false;
+    public double[] coordNoted;
     //public boolean forcenoted = false;
     public int note_precision = 5;
 
@@ -30,7 +43,7 @@ public abstract class Plot implements Plotable, Noteable, Editable {
     public void clearLayers() {
         layers.clear();
     }
-    
+
     public void addLayer(LayerPlot q) {
         layers.add(q);
     }
@@ -77,7 +90,6 @@ public abstract class Plot implements Plotable, Noteable, Editable {
     }*/
     public void addVector(double[][] v) {
         layers.add(new VectorLayerPlot(this, v));
-
     }
 
     public abstract void setData(double[][] d);
@@ -90,7 +102,7 @@ public abstract class Plot implements Plotable, Noteable, Editable {
 
     /**This method should be abstract, but for backward compatibility, here is a basic impl.*/
     public double[][] getBounds() {
-    return Array.mergeRows(Array.min(getData()),Array.max(getData()));
+        return Array.mergeRows(Array.min(getData()), Array.max(getData()));
     }
 
     public void setVisible(boolean v) {
@@ -134,7 +146,7 @@ public abstract class Plot implements Plotable, Noteable, Editable {
 
         draw.setColor(PlotCanvas.NOTE_COLOR);
         draw.drawCoordinate(coordNoted);
-        draw.drawText(Array.cat("\n", draw.canvas.reverseMapedData(coordNoted)), coordNoted);
+        draw.drawShadowedText(Array.cat("\n", draw.canvas.reverseMapedData(coordNoted)), .5f, coordNoted);
     }
 
     public abstract void plot(AbstractDrawer draw, Color c);
@@ -160,5 +172,86 @@ public abstract class Plot implements Plotable, Noteable, Editable {
     public void editnote(AbstractDrawer draw) {
         plot(draw, PlotCanvas.EDIT_COLOR);
         plotLayerPlots(draw, PlotCanvas.EDIT_COLOR);
+    }
+    public DataPanel datapanel = null;
+    public PlotCanvas plotCanvas;
+
+    public DataPanel getDataPanel(PlotCanvas plotCanvas) {
+        this.plotCanvas = plotCanvas;
+        if (datapanel == null) {
+            datapanel = new DefaultDataPanel(this);
+        }
+        return datapanel;
+    }
+
+    public class DefaultDataPanel extends DataPanel {
+
+        private static final long serialVersionUID = 1L;
+        MatrixTablePanel XY;
+        JCheckBox visible;
+        JButton color;
+        JPanel plottoolspanel;
+        Plot plot;
+        //DataFrame dframe;
+
+        public DefaultDataPanel(/*DataFrame _dframe,*/Plot _plot) {
+            plot = _plot;
+            //dframe = _dframe;
+            visible = new JCheckBox("Visible");
+            visible.setSelected(plot.getVisible());
+            color = new JButton();
+            color.setBackground(plot.getColor());
+            XY = new MatrixTablePanel(plotCanvas.reverseMapedData(plot.getData()));
+
+            visible.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    if (visible.isSelected()) {
+                        plot.setVisible(true);
+                    } else {
+                        plot.setVisible(false);
+                    }
+                    plotCanvas.linkedLegendPanel.updateLegends();
+                    /*dframe.*/ plotCanvas.repaint();
+                }
+            });
+            color.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    Color c = JColorChooser.showDialog(plotCanvas, "Choose plot color", plot.getColor());
+                    color.setBackground(c);
+                    plot.setColor(c);
+                    plotCanvas.linkedLegendPanel.updateLegends();
+                    /*dframe.*/ plotCanvas.linkedLegendPanel.repaint();
+                    /*dframe.*/ plotCanvas.repaint();
+                }
+            });
+
+            this.setLayout(new BorderLayout());
+            plottoolspanel = new JPanel();
+            plottoolspanel.add(visible);
+            plottoolspanel.add(color);
+            this.add(plottoolspanel, BorderLayout.NORTH);
+            this.add(XY, BorderLayout.CENTER);
+        }
+
+        @Override
+        protected void toWindow() {
+            XY.toWindow();
+        }
+
+        @Override
+        public void toClipBoard() {
+            XY.toClipBoard();
+        }
+
+        @Override
+        public void toASCIIFile(File file) {
+            XY.toASCIIFile(file);
+        }
+
+        public String getText() {
+            return XY.getText();
+        }
     }
 }

@@ -40,7 +40,7 @@ public class LegendPanel extends JPanel implements ComponentListener {
         container = new JPanel();
         container.setBackground(plotCanvas.getBackground());
         container.setLayout(new GridLayout(1, 1, inset, inset));
-        container.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY, 1),null));
+        container.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY, 1), null));
 
         updateLegends();
 
@@ -60,6 +60,9 @@ public class LegendPanel extends JPanel implements ComponentListener {
 
             legends = new LinkedList<Legend>();
             for (Plot plot : plotCanvas.getPlots()) {
+                if (!plot.getVisible()) {
+                    continue;
+                }
                 Legend l = new Legend(plot);
                 legends.add(l);
 
@@ -67,7 +70,6 @@ public class LegendPanel extends JPanel implements ComponentListener {
                 maxHeight = (int) Math.max(maxHeight, l.getPreferredSize().getHeight());
 
                 container.add(l);
-
             }
 
             updateSize();
@@ -105,14 +107,14 @@ public class LegendPanel extends JPanel implements ComponentListener {
     }
 
     public void note(int i) {
-        if (orientation != INVISIBLE && legends!=null && legends.size()>i) {
+        if (orientation != INVISIBLE && legends != null && legends.size() > i) {
             legends.get(i).setBackground(PlotCanvas.NOTE_COLOR);
             legends.get(i).name.setForeground(plotPanel.getBackground());
         }
     }
 
     public void nonote(int i) {
-        if (orientation != INVISIBLE && legends!=null && legends.size()>i) {
+        if (orientation != INVISIBLE && legends != null && legends.size() > i) {
             legends.get(i).setBackground(plotPanel.getBackground());
             legends.get(i).name.setForeground(PlotCanvas.NOTE_COLOR);
         }

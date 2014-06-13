@@ -14,64 +14,62 @@ import org.math.plot.components.*;
  * 
  * @author Yann RICHET
  */
-
 public abstract class DataPanel extends JPanel implements ComponentListener, FilePrintable, ClipBoardPrintable, StringPrintable {
 
-	protected DataToolBar toolBar;
+    protected DataToolBar toolBar;
+    protected JScrollPane scrollPane;
+    public static int[] dimension = new int[]{400, 400};
 
-	protected JScrollPane scrollPane;
+    public DataPanel() {
+        setLayout(new BorderLayout());
+        initToolBar();
+        init();
+    }
 
-	public static int[] dimension = new int[] { 400, 400 };
+    protected void initToolBar() {
+        toolBar = new DataToolBar(this);
+        add(toolBar, BorderLayout.NORTH);
+        toolBar.setFloatable(false);
+    }
 
-	public DataPanel() {
-		setLayout(new BorderLayout());
-		initToolBar();
-		init();
-	}
+    protected void initSize() {
+        if (scrollPane != null) {
+            scrollPane.setSize(this.getSize());
+        }
+        // scrollPane.setPreferredSize(this.getSize());
+    }
 
-	protected void initToolBar() {
-		toolBar = new DataToolBar(this);
-		add(toolBar, BorderLayout.NORTH);
-		toolBar.setFloatable(false);
-	}
+    protected void init() {
+        // initSize();
+        addComponentListener(this);
+    }
 
-	protected void initSize() {
-		scrollPane.setSize(this.getSize());
-		// scrollPane.setPreferredSize(this.getSize());
-	}
+    public void update() {
+        // this.remove(scrollPane);
+        toWindow();
+        repaint();
+    }
 
-	protected void init() {
-		// initSize();
-		addComponentListener(this);
-	}
+    protected abstract void toWindow();
 
-	public void update() {
-		// this.remove(scrollPane);
-		toWindow();
-		repaint();
-	}
+    public abstract void toClipBoard();
 
-	protected abstract void toWindow();
+    public abstract void toASCIIFile(File file);
 
-	public abstract void toClipBoard();
+    public void componentHidden(ComponentEvent e) {
+    }
 
-	public abstract void toASCIIFile(File file);
+    public void componentMoved(ComponentEvent e) {
+    }
 
-	public void componentHidden(ComponentEvent e) {
-	}
+    public void componentResized(ComponentEvent e) {
+        /*
+         * dimension = new int[] { (int) (this.getSize().getWidth()), (int)
+         * (this.getSize().getHeight()) };
+         */
+        initSize();
+    }
 
-	public void componentMoved(ComponentEvent e) {
-	}
-
-	public void componentResized(ComponentEvent e) {
-		/*
-		 * dimension = new int[] { (int) (this.getSize().getWidth()), (int)
-		 * (this.getSize().getHeight()) };
-		 */
-		initSize();
-	}
-
-	public void componentShown(ComponentEvent e) {
-	}
-
+    public void componentShown(ComponentEvent e) {
+    }
 }

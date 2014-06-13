@@ -1,5 +1,8 @@
 package org.math.plot.canvas;
 
+import java.awt.BasicStroke;
+import java.awt.Stroke;
+import org.math.plot.render.AWTDrawer;
 import org.math.plot.utils.FastMath;
 import javax.swing.JFrame;
 import java.awt.Color;
@@ -44,6 +47,8 @@ import static org.math.plot.plotObjects.Base.*;
  * BSD License
  * 
  * @author Yann RICHET
+ * Changed on 6/13/2014 by Jerry Dietrich 
+ * Contact info ballooninternet@cox.net
  */
 public abstract class PlotCanvas extends JPanel implements MouseListener, MouseMotionListener, ComponentListener, BaseDependant, MouseWheelListener {
 
@@ -80,6 +85,11 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         initPanel();
         initBasenGrid(min, max, axesScales, axesLabels);
         initDrawer();
+    }
+
+    @Override
+    public boolean isOptimizedDrawingEnabled() {
+        return true;
     }
 
     public void attachLegend(LegendPanel lp) {
@@ -487,7 +497,7 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
     public void displayScalesFrame() {
         scalesFrame.setVisible(true);
     }
-    DataFrame dataFrame = new DataFrame(this, linkedLegendPanel);
+    DataFrame dataFrame = new DataFrame(this);
 
     public void setDataFrame(DataFrame dataFrame) {
         this.dataFrame = dataFrame;
@@ -625,7 +635,6 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
     public boolean allowEdit = true;
     public boolean allowNote = true;
     public boolean allowNoteCoord = true;
-    protected double[] coordNoted;
 
     public void paint(Graphics gcomp) {
         // System.out.println("PlotCanvas.paint");
@@ -645,14 +654,20 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         grid.plot(draw);
 
         for (int i = 0; i < plots.size(); i++) {
-                getPlot(i).plot(draw);
-                if (linkedLegendPanel != null) {
-                    linkedLegendPanel.nonote(i);
-                }
+            getPlot(i).plot(draw);
+            if (linkedLegendPanel != null) {
+                linkedLegendPanel.nonote(i);
             }
-        
+        }
+
         for (int i = 0; i < objects.size(); i++) {
             getPlotable(i).plot(draw);
+        }
+
+        if (drawRect != null) {
+            gcomp2D.setColor(Color.black);
+            gcomp2D.setStroke(rectStroke);
+            gcomp2D.drawRect(drawRect[0], drawRect[1], drawRect[2], drawRect[3]);
         }
 
         // draw note
@@ -670,13 +685,12 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
                     getPlot(i).note(draw);
                     //return;
                 }
-                if (allowNoteCoord && coordNoted != null) {
-                    getPlot(i).noteCoord(draw, coordNoted);
+                if (allowNoteCoord && getPlot(i).coordNoted != null) {
+                    getPlot(i).noteCoord(draw, getPlot(i).coordNoted);
                 }
             }
         }
     }
-    
     // ///////////////////////////////////////////
     // ////// Listeners //////////////////////////
     // ///////////////////////////////////////////
@@ -688,7 +702,9 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
     protected int[] mouseClick = new int[2];
 
     public void clearNotes() {
-        coordNoted = null;
+        for (int i = 0; i < plots.size(); i++) {
+            getPlot(i).coordNoted = null;
+        }
         repaint();
     }
 
@@ -706,6 +722,8 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         mouseClick[0] = mouseCurent[0];
         mouseClick[1] = mouseCurent[1];
     }
+    int[] drawRect = null;
+    final Stroke rectStroke = new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL);
 
     public void mouseDragged(MouseEvent e) {
         //System.out.println("PlotCanvas.mouseDragged");
@@ -728,10 +746,18 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
                 repaint();
                 break;
             case ZOOM:
-                repaint();
-                Graphics gcomp = getGraphics();
-                gcomp.setColor(Color.black);
-                gcomp.drawRect(FastMath.min(mouseClick[0], mouseCurent[0]), FastMath.min(mouseClick[1], mouseCurent[1]), FastMath.abs(mouseCurent[0] - mouseClick[0]), FastMath.abs(mouseCurent[1] - mouseClick[1]));
+                int x = FastMath.min(mouseClick[0], mouseCurent[0]);
+                int y = FastMath.min(mouseClick[1], mouseCurent[1]);
+                int w = FastMath.abs(mouseCurent[0] - mouseClick[0]);
+                int h = FastMath.abs(mouseCurent[1] - mouseClick[1]);
+                if (drawRect == null) {
+                    drawRect = new int[4];
+                }
+                drawRect[0] = x;
+                drawRect[1] = y;
+                drawRect[2] = w;
+                drawRect[3] = h;
+                repaint();  //repaint(x - 1, y - 1, w + 2, h + 2);
                 break;
         }
         //repaint();
@@ -757,6 +783,10 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
                                       FastMath.abs((double) (mouseCurent[1] - mouseClick[1]) / (double) getHeight())
                     };
                     draw.dilate(origin, ratio);
+                    drawRect = null;
+                    repaint();
+                } else {
+                    drawRect = null;
                     repaint();
                 }
                 break;
@@ -809,18 +839,18 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
                     }
                 } else if (e.getModifiers() == MouseEvent.BUTTON3_MASK) {
                     if (_coordNoted != null) {
-                        if (coordNoted != null) {
+                        if (getPlot(i).coordNoted != null) {
                             boolean alreadyNoted = true;
                             for (int j = 0; j < _coordNoted.length; j++) {
-                                alreadyNoted = alreadyNoted && _coordNoted[j] == coordNoted[j];
+                                alreadyNoted = alreadyNoted && _coordNoted[j] == getPlot(i).coordNoted[j];
                             }
                             if (alreadyNoted) {
-                                coordNoted = null;
+                                getPlot(i).coordNoted = null;
                             } else {
-                                coordNoted = _coordNoted;
+                                getPlot(i).coordNoted = _coordNoted;
                             }
                         } else {
-                            coordNoted = _coordNoted;
+                            getPlot(i).coordNoted = _coordNoted;
                         }
                     }
                 }
@@ -838,6 +868,19 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
     }
 
     public void mouseMoved(MouseEvent e) {
+        mouseCurent[0] = e.getX();
+        mouseCurent[1] = e.getY();
+        e.consume();
+        	for (int i = 0; i < plots.size(); i++) {
+        		if (getPlot(i).noted) {
+        			double[] _coordNoted = getPlot(i).isSelected(mouseCurent, draw);           
+        			if (_coordNoted != null) {
+        				getPlot(i).coordNoted = _coordNoted;
+        	        	repaint();
+        			}
+        		}
+        	}
+        
         //System.out.println("PlotCanvas.mouseMoved");
 		/*
          * System.out.println("PlotCanvas.mouseClicked"); System.out.println("
@@ -878,15 +921,23 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         //switch (ActionMode) {
         //    case ZOOM:
         if (e.getWheelRotation() == -1) {
-            origin = new int[]{(int) (mouseCurent[0] - getWidth() / 3/* (2*factor) */), (int) (mouseCurent[1] - getHeight() / 3/* (2*factor) */)};
-            ratio = new double[]{0.666/* 1/factor, 1/factor */, 0.666};
+            if (Array.max(((AWTDrawer) draw).projection.totalScreenRatio) > .01) {
+                origin = new int[]{(int) (mouseCurent[0] - getWidth() / 3/* (2*factor) */),
+                                   (int) (mouseCurent[1] - getHeight() / 3/* (2*factor) */)};
+                ratio = new double[]{0.666/* 1/factor, 1/factor */, 0.666};
+                draw.dilate(origin, ratio);
+            }
         } else {
-            origin = new int[]{(int) (mouseCurent[0] - getWidth() / 1.333/* (2/factor) */),
-                               (int) (mouseCurent[1] - getHeight() / 1.333/* (2/factor) */)
-            };
-            ratio = new double[]{1.5, 1.5 /* factor, factor */};
+            if (Array.max(((AWTDrawer) draw).projection.totalScreenRatio) < 1) {
+                origin = new int[]{(int) (mouseCurent[0] - getWidth() / 1.333/* (2/factor) */),
+                                   (int) (mouseCurent[1] - getHeight() / 1.333/* (2/factor) */)
+                };
+                ratio = new double[]{1.5, 1.5 /* factor, factor */};
+                draw.dilate(origin, ratio);
+            } else /* (Array.max(((AWTDrawer) draw).projection.totalScreenRatio) >= 1)*/ {
+                ((AWTDrawer) draw).projection.initBaseCoordsProjection(true);
+            }
         }
-        draw.dilate(origin, ratio);
         repaint();
         //       break;
         //}

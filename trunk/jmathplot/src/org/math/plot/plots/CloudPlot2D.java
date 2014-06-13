@@ -83,6 +83,7 @@ public class CloudPlot2D extends Plot {
 
     @Override
     public void setData(double[][] d) {
+        datapanel = null;
         splitXYf(d);
     }
 

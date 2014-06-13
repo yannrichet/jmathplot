@@ -128,6 +128,7 @@ public class HistogramPlot3D extends Plot {
 
     @Override
     public void setData(double[][] d) {
+        datapanel = null;
         XY = d;
     }
 
@@ -162,12 +163,12 @@ public class HistogramPlot3D extends Plot {
     }
 
     public void setData(double[][] d, double[][] w) {
-        XY = d;
+        setData(d);
         widths = w;
     }
 
     public void setData(double[][] d, double... w) {
-        XY = d;
+        setData(d);
         setDataWidth(w);
     }
 

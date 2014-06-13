@@ -6,6 +6,8 @@ import org.math.plot.utils.FastMath;
  * BSD License
  * 
  * @author Yann RICHET
+ * Changed on 6/13/2014 by Jerry Dietrich 
+ * Contact info ballooninternet@cox.net
  */
 public class Base {
 
@@ -32,13 +34,12 @@ public class Base {
 	public String[] axesScales;
 
 	public Base(double[] Xmi, double[] Xma, String[] scales) {
+		init(Xmi.length);
 		trueXmin = Xmi;
 		trueXmax = Xma;
 		dimension = trueXmin.length;
 		axesScales = scales;
-		init(trueXmin.length);
-		setRoundBounds(trueXmin, trueXmax);
-		resetCoords();
+		setFixedBounds(Xmi, Xma);
 	}
 
 	private void init(int d) {
@@ -119,8 +120,10 @@ public class Base {
 
 	private void setBounds(int i, double Xmi, double Xma) {
 		if ((Xmi <= 0) && (axesScales[i].equalsIgnoreCase(LOGARITHM))) {
-			throw new IllegalArgumentException("Error while bounding dimension " + (i + 1) + " : bounds [" + Xmi + "," + Xma
-					+ "] are incompatible with Logarithm scale.");
+			Xmi = 1.0;
+		}
+		if ((Xma <= 0) && (axesScales[i].equalsIgnoreCase(LOGARITHM))) {
+			Xma = 1.0;
 		}
 		if (Xmi == Xma) {
 			Xmi = Xma - 1;
@@ -154,7 +157,10 @@ public class Base {
 		if (axesScales[i].equalsIgnoreCase(LOGARITHM)) {
 			setBounds(i, FastMath.pow(10, FastMath.floor(FastMath.log(trueXmin[i]) / FastMath.log(10))), FastMath.pow(10, FastMath.ceil(FastMath.log(trueXmax[i]) / FastMath.log(10))));
 		} else if (axesScales[i].equalsIgnoreCase(LINEAR)||axesScales[i].equalsIgnoreCase(STRINGS)) {
-			setBounds(i, precisionUnit[i] * (FastMath.floor(trueXmin[i] / precisionUnit[i])), precisionUnit[i] * (FastMath.ceil(trueXmax[i] / precisionUnit[i])));
+			if (roundXmin[i] <= roundXmax[i])
+			  setBounds(i, precisionUnit[i] * (FastMath.floor(trueXmin[i] / precisionUnit[i])), precisionUnit[i] * (FastMath.ceil(trueXmax[i] / precisionUnit[i])));
+			else
+			  setBounds(i, precisionUnit[i] * (FastMath.ceil(trueXmax[i] / precisionUnit[i])), precisionUnit[i] * (FastMath.floor(trueXmin[i] / precisionUnit[i])));
 		}
 
 		/*

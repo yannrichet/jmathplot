@@ -46,7 +46,7 @@ public class Projection3D extends Projection {
         tan_phi = tan(phi);
     }
 
-    protected void initBaseCoordsProjection(boolean reset) {
+    public void initBaseCoordsProjection(boolean reset) {
         if (reset) {
             x0 = (draw.canvas.base.roundXmax[0] + draw.canvas.base.roundXmin[0]) / 2;
             y0 = (draw.canvas.base.roundXmax[1] + draw.canvas.base.roundXmin[1]) / 2;
