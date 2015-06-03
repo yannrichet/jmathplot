@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>9</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.github.yannrichet</groupId>
+	<artifactId>JMathPlot</artifactId>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+	<name>jmathplot</name>
+
+	<url>https://github.com/yannrichet/jmathplot</url>
+
+	<properties>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.github.yannrichet</groupId>
+			<artifactId>jmathio</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.yannrichet</groupId>
+			<artifactId>jmatharray</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>sonatype-oss-releases</id>
+			<url>https://oss.sonatype.org/content/repositories/releases</url>
+		</repository>
+	</repositories>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.2</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.4.2</version>
+			</plugin>
+		</plugins>
+		<finalName>jmathplot</finalName>
+	</build>
+
+	<scm>
+		<connection>scm:git:git@github.com:yannrichet/jmathplot.git</connection>
+		<developerConnection>scm:git:git@github.com:yannrichet/jmathplot.git</developerConnection>
+		<url>git@github.com:yannrichet/jmathplot.git</url>
+	</scm>
+
+</project>

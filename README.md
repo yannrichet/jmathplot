@@ -35,7 +35,22 @@ import org.math.plot.*;
 
 ## Use it ##
 
-- put jmathplot.jar in your java classpath
-- create a new PlotPanel instance: PlotPanel plot = new Plot2DPanel();
-- add a plot inside plot.addLinePlot("my plot", x, y);
+Put https://github.com/yannrichet/jmathplot/blob/master/dist/jmathplot.jar in your java classpath
+
+Or include maven dependency:
+```xml
+<dependencies>
+...
+    <dependency>
+      <groupId>com.github.yannrichet</groupId>
+      <artifactId>jmathplot</artifactId>
+      <version>1.0</version>
+    </dependency>
+...
+</dependencies>
+```
+
+Then
+- create a new PlotPanel instance: `PlotPanel plot = new Plot2DPanel();`
+- add a plot inside `plot.addLinePlot("my plot", x, y);`
 - use the PlotPanel as any Swing component (all PlotPanel extends JPanel, in fact) 
