@@ -160,7 +160,7 @@ public abstract class AbstractDrawer {
      * 
      * @param pC
      *            plot ccordinates to project in screen
-     * @return scrren coordinates
+     * @return screen coordinates
      */
     public abstract int[] project(double... pC);
 
@@ -168,9 +168,9 @@ public abstract class AbstractDrawer {
      * Returns the screen coordinates coresponding to plot coordinates Used to
      * test if mouse is pointing on a plot.
      * 
-     * @param pC
+     * @param rC
      *            plot ccordinates to project in screen
-     * @return scrren coordinates
+     * @return screen coordinates
      */
     public abstract int[] projectBase(double... rC);
 

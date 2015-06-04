@@ -504,8 +504,8 @@ public class IntWrapper {
     }
 
     /**
-     * Quick cosine, with accuracy of about 1.6e-3 (PI/<look-up tabs size>)
-     * for |angle| < 6588397.0 (Integer.MAX_VALUE * (2*PI/<look-up tabs size>)),
+     * Quick cosine, with accuracy of about 1.6e-3 (PI/'look-up tabs size')
+     * for |angle| &lt; 6588397.0 (Integer.MAX_VALUE * (2*PI/'look-up tabs size')),
      * and no accuracy at all for larger values.
      * 
      * @param angle Angle in radians.
@@ -550,8 +550,8 @@ public class IntWrapper {
     }
 
     /**
-     * Quick sine, with accuracy of about 1.6e-3 (PI/<look-up tabs size>)
-     * for |angle| < 6588397.0 (Integer.MAX_VALUE * (2*PI/<look-up tabs size>)),
+     * Quick sine, with accuracy of about 1.6e-3 (PI/'look-up tabs size')
+     * for |angle| &lt; 6588397.0 (Integer.MAX_VALUE * (2*PI/'look-up tabs size')),
      * and no accuracy at all for larger values.
      * 
      * @param angle Angle in radians.
@@ -1057,7 +1057,7 @@ public class IntWrapper {
     }
 
     /**
-     * Quick exp, with a max relative error of about 3e-2 for |value| < 700.0 or so,
+     * Quick exp, with a max relative error of about 3e-2 for |value| &lt; 700.0 or so,
      * and no accuracy at all outside this range.
      * Derived from a note by Nicol N. Schraudolph, IDSIA, 1998.
      * 
@@ -1311,7 +1311,7 @@ public class IntWrapper {
      * @param value An integer value in [1,Integer.MAX_VALUE].
      * @return The integer part of the logarithm, in base 2, of the specified value,
      *         i.e. a result in [0,30]
-     * @throws IllegalArgumentException if the specified value is <= 0.
+     * @throws IllegalArgumentException if the specified value is &lt;= 0.
      */
     public static int log2(int value) {
         return NumbersUtils.log2(value);
@@ -1321,7 +1321,7 @@ public class IntWrapper {
      * @param value An integer value in [1,Long.MAX_VALUE].
      * @return The integer part of the logarithm, in base 2, of the specified value,
      *         i.e. a result in [0,62]
-     * @throws IllegalArgumentException if the specified value is <= 0.
+     * @throws IllegalArgumentException if the specified value is &lt;= 0.
      */
     public static int log2(long value) {
         return NumbersUtils.log2(value);
@@ -1397,7 +1397,7 @@ public class IntWrapper {
 
     /**
      * Quick pow, with a max relative error of about 3.5e-2
-     * for |a^b| < 1e10, of about 0.17 for |a^b| < 1e50,
+     * for |a^b| &lt; 1e10, of about 0.17 for |a^b| &lt; 1e50,
      * and worse accuracy above.
      * 
      * @param value A double value, in ]0,+infinity[ (strictly positive and finite).
@@ -1413,7 +1413,7 @@ public class IntWrapper {
 
     /**
      * This treatment is somehow accurate for low values of |power|,
-     * and for |power*getExponent(value)| < 1023 or so (to stay away
+     * and for |power*getExponent(value)| &lt; 1023 or so (to stay away
      * from double extreme magnitudes (large and small)).
      * 
      * @param value A double value.
@@ -2302,7 +2302,7 @@ public class IntWrapper {
      * @param minValue An int value.
      * @param maxValue An int value.
      * @param value An int value.
-     * @return minValue if value < minValue, maxValue if value > maxValue, value otherwise.
+     * @return minValue if value &lt; minValue, maxValue if value &gt; maxValue, value otherwise.
      */
     public static int toRange(int minValue, int maxValue, int value) {
         return NumbersUtils.toRange(minValue, maxValue, value);
@@ -2312,7 +2312,7 @@ public class IntWrapper {
      * @param minValue A long value.
      * @param maxValue A long value.
      * @param value A long value.
-     * @return minValue if value < minValue, maxValue if value > maxValue, value otherwise.
+     * @return minValue if value &lt; minValue, maxValue if value &gt; maxValue, value otherwise.
      */
     public static long toRange(long minValue, long maxValue, long value) {
         return NumbersUtils.toRange(minValue, maxValue, value);
@@ -2322,7 +2322,7 @@ public class IntWrapper {
      * @param minValue A float value.
      * @param maxValue A float value.
      * @param value A float value.
-     * @return minValue if value < minValue, maxValue if value > maxValue, value otherwise.
+     * @return minValue if value &lt; minValue, maxValue if value &gt; maxValue, value otherwise.
      */
     public static float toRange(float minValue, float maxValue, float value) {
         return NumbersUtils.toRange(minValue, maxValue, value);
@@ -2332,19 +2332,19 @@ public class IntWrapper {
      * @param minValue A double value.
      * @param maxValue A double value.
      * @param value A double value.
-     * @return minValue if value < minValue, maxValue if value > maxValue, value otherwise.
+     * @return minValue if value &lt; minValue, maxValue if value &gt; maxValue, value otherwise.
      */
     public static double toRange(double minValue, double maxValue, double value) {
         return NumbersUtils.toRange(minValue, maxValue, value);
     }
 
     /**
-     * NB: Since 2*Math.PI < 2*PI, a span of 2*Math.PI does not mean full angular range.
+     * NB: Since 2*Math.PI &lt; 2*PI, a span of 2*Math.PI does not mean full angular range.
      * ex.: isInClockwiseDomain(0.0, 2*Math.PI, -1e-20) returns false.
-     * ---> For full angular range, use a span > 2*Math.PI, like 2*PI_SUP constant of this class.
+     * For full angular range, use a span &gt; 2*Math.PI, like 2*PI_SUP constant of this class.
      * 
      * @param startAngRad An angle, in radians.
-     * @param angSpanRad An angular span, >= 0.0, in radians.
+     * @param angSpanRad An angular span, &gt;= 0.0, in radians.
      * @param angRad An angle, in radians.
      * @return True if angRad is in the clockwise angular domain going from startAngRad, over angSpanRad,
      *         extremities included, false otherwise.
@@ -2366,7 +2366,7 @@ public class IntWrapper {
                 }
             } else if (angSpanRad != angSpanRad) { // angSpanRad is NaN
                 return false;
-            } else { // angSpanRad > 2*Math.PI
+            } else { // angSpanRad &gt; 2*Math.PI
                 // we know angRad is not NaN, due to a previous test
                 return true;
             }

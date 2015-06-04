@@ -604,7 +604,7 @@ public strictfp final class NumbersUtils {
      * @param value An integer value in [0,Integer.MAX_VALUE].
      * @return The number of bits required to store the specified value as an unsigned integer,
      *         i.e. a result in [1,31].
-     * @throws IllegalArgumentException if the specified value is < 0.
+     * @throws IllegalArgumentException if the specified value is &lt; 0.
      */
     public static int bitSizeForUnsignedValue(int value) {
         if (value > 0) {
@@ -622,7 +622,7 @@ public strictfp final class NumbersUtils {
      * @param value An integer value in [0,Long.MAX_VALUE].
      * @return The number of bits required to store the specified value as an unsigned integer,
      *         i.e. a result in [1,63].
-     * @throws IllegalArgumentException if the specified value is < 0.
+     * @throws IllegalArgumentException if the specified value is &lt; 0.
      */
     public static int bitSizeForUnsignedValue(long value) {
         if (value > 0) {
@@ -641,14 +641,14 @@ public strictfp final class NumbersUtils {
      */
     
     /**
-     * @return 1 if the specified value is > 0, 0 if it is 0, -1 otherwise.
+     * @return 1 if the specified value is &gt; 0, 0 if it is 0, -1 otherwise.
      */
     public static int signum(int a) {
         return (a < 0) ? -1 : ((a == 0) ? 0 : 1);
     }
 
     /**
-     * @return 1 if the specified value is > 0, 0 if it is 0, -1 otherwise.
+     * @return 1 if the specified value is &gt; 0, 0 if it is 0, -1 otherwise.
      */
     public static int signum(long a) {
         return (a < 0) ? -1 : ((a == 0) ? 0 : 1);
@@ -700,14 +700,14 @@ public strictfp final class NumbersUtils {
     }
 
     /**
-     * @return True if the specified values are both >= 0 or both < 0, false otherwise.
+     * @return True if the specified values are both &gt;= 0 or both &lt; 0, false otherwise.
      */
     public static boolean haveSameSign(int a, int b) {
         return ((a^b) >= 0);
     }
 
     /**
-     * @return True if the specified values are both >= 0 or both < 0, false otherwise.
+     * @return True if the specified values are both &gt;= 0 or both &lt; 0, false otherwise.
      */
     public static boolean haveSameSign(long a, long b) {
         return ((a^b) >= 0);
@@ -715,7 +715,7 @@ public strictfp final class NumbersUtils {
 
     /**
      * @return True if the specified value is a power of two,
-     *         i.e. a value of the form 2^k, with k >= 0.
+     *         i.e. a value of the form 2^k, with k &gt;= 0.
      */
     public static boolean isPowerOfTwo(int a) {
         if (a <= 0) {
@@ -730,7 +730,7 @@ public strictfp final class NumbersUtils {
 
     /**
      * @return True if the specified value is a power of two,
-     *         i.e. a value of the form 2^k, with k >= 0.
+     *         i.e. a value of the form 2^k, with k &gt;= 0.
      */
     public static boolean isPowerOfTwo(long a) {
         if (a <= 0) {
@@ -745,7 +745,7 @@ public strictfp final class NumbersUtils {
 
     /**
      * @return True if the specified value is a signed power of two,
-     *         i.e. a value of the form +-2^k, with k >= 0.
+     *         i.e. a value of the form +-2^k, with k &gt;= 0.
      */
     public static boolean isSignedPowerOfTwo(int a) {
         if (a > 0) {
@@ -761,7 +761,7 @@ public strictfp final class NumbersUtils {
 
     /**
      * @return True if the specified value is a signed power of two,
-     *         i.e. a value of the form +-2^k, with k >= 0.
+     *         i.e. a value of the form +-2^k, with k &gt;= 0.
      */
     public static boolean isSignedPowerOfTwo(long a) {
         if (a > 0) {
@@ -777,7 +777,7 @@ public strictfp final class NumbersUtils {
 
     /**
      * @param a A value in [1,Integer.MAX_VALUE].
-     * @return The highest power of two <= a.
+     * @return The highest power of two &lt;= a.
      */
     public static int floorPowerOfTwo(int a) {
         if (a <= 0) {
@@ -788,7 +788,7 @@ public strictfp final class NumbersUtils {
 
     /**
      * @param a A value in [1,Long.MAX_VALUE].
-     * @return The highest power of two <= a.
+     * @return The highest power of two &lt;= a.
      */
     public static long floorPowerOfTwo(long a) {
         if (a <= 0) {
@@ -799,7 +799,7 @@ public strictfp final class NumbersUtils {
 
     /**
      * @param a A value in [0,2^30].
-     * @return The lowest power of two >= a.
+     * @return The lowest power of two &gt;= a.
      */
     public static int ceilingPowerOfTwo(int a) {
         checkIsInRange(0, (1<<30), a);
@@ -809,7 +809,7 @@ public strictfp final class NumbersUtils {
 
     /**
      * @param a A value in [0,2^62].
-     * @return The lowest power of two >= a.
+     * @return The lowest power of two &gt;= a.
      */
     public static long ceilingPowerOfTwo(long a) {
         checkIsInRange(0L, (1L<<62), a);
@@ -838,7 +838,7 @@ public strictfp final class NumbersUtils {
         if (!haveSameEvenness(a, b)) {
             // inexact
             if (((a&b) < 0) || (((a|b) < 0) && (a+b < 0))) {
-                // both < 0, or only one is < 0 and it has the largest magnitude
+                // both &lt; 0, or only one is &lt; 0 and it has the largest magnitude
                 result++;
             }
         }
@@ -853,7 +853,7 @@ public strictfp final class NumbersUtils {
         if (!haveSameEvenness(a, b)) {
             // inexact
             if (((a&b) < 0) || (((a|b) < 0) && (a+b < 0))) {
-                // both < 0, or only one is < 0 and it has the largest magnitude
+                // both &lt; 0, or only one is &lt; 0 and it has the largest magnitude
                 result++;
             }
         }
@@ -866,7 +866,7 @@ public strictfp final class NumbersUtils {
      * 
      * @return Minus half the range width (inclusive, and rounded to the value of smaller magnitude)
      *         between the specified bounds.
-     * @throws IllegalArgumentException if min > max.
+     * @throws IllegalArgumentException if min &gt; max.
      */
     public static int negHalfWidth(int min, int max) {
         if (min > max) {
@@ -882,7 +882,7 @@ public strictfp final class NumbersUtils {
      * 
      * @return Minus half the range width (inclusive, and rounded to the value of smaller magnitude)
      *         between the specified bounds.
-     * @throws IllegalArgumentException if min > max.
+     * @throws IllegalArgumentException if min &gt; max.
      */
     public static long negHalfWidth(long min, long max) {
         if (min > max) {
@@ -897,7 +897,7 @@ public strictfp final class NumbersUtils {
      * is a signed power of two is only checked if assertions are enabled.
      * 
      * @param value A value.
-     * @param spot A signed power of two (i.e. a value of the form +-2^k, k >= 0).
+     * @param spot A signed power of two (i.e. a value of the form +-2^k, k &gt;= 0).
      * @return value % spot, i.e. a value in ]-|spot|,|spot|[.
      */
     public static int moduloSignedPowerOfTwo(int value, int spot) {
@@ -915,7 +915,7 @@ public strictfp final class NumbersUtils {
      * is a signed power of two is only checked if assertions are enabled.
      * 
      * @param value A value.
-     * @param spot A signed power of two (i.e. a value of the form +-2^k, k >= 0).
+     * @param spot A signed power of two (i.e. a value of the form +-2^k, k &gt;= 0).
      * @return value % spot, i.e. a value in ]-|spot|,|spot|[.
      */
     public static long moduloSignedPowerOfTwo(long value, long spot) {
@@ -929,10 +929,10 @@ public strictfp final class NumbersUtils {
     }
 
     /**
-     * @param value An integer value > 0.
+     * @param value An integer value &gt; 0.
      * @return The integer part of the logarithm, in base 2, of the specified value,
      *         i.e. a result in [0,30]
-     * @throws IllegalArgumentException if the specified value is <= 0.
+     * @throws IllegalArgumentException if the specified value is &lt;= 0.
      */
     public static int log2(int value) {
         if (value <= 0) {
@@ -942,10 +942,10 @@ public strictfp final class NumbersUtils {
     }
 
     /**
-     * @param value An integer value > 0.
+     * @param value An integer value &gt; 0.
      * @return The integer part of the logarithm, in base 2, of the specified value,
      *         i.e. a result in [0,62]
-     * @throws IllegalArgumentException if the specified value is <= 0.
+     * @throws IllegalArgumentException if the specified value is &lt;= 0.
      */
     public static int log2(long value) {
         if (value <= 0) {
@@ -1342,7 +1342,7 @@ public strictfp final class NumbersUtils {
      * @param min A value.
      * @param max A value.
      * @param a A value.
-     * @return min if a <= min, else max if a >= max, else a.
+     * @return min if a &lt;= min, else max if a &gt;= max, else a.
      */
     public static int toRange(int min, int max, int a) {
         if (a <= min) {
@@ -1358,7 +1358,7 @@ public strictfp final class NumbersUtils {
      * @param min A value.
      * @param max A value.
      * @param a A value.
-     * @return min if a <= min, else max if a >= max, else a.
+     * @return min if a &lt;= min, else max if a &gt;= max, else a.
      */
     public static long toRange(long min, long max, long a) {
         if (a <= min) {
@@ -1374,7 +1374,7 @@ public strictfp final class NumbersUtils {
      * @param min A value.
      * @param max A value.
      * @param a A value.
-     * @return min if a <= min, else max if a >= max, else a.
+     * @return min if a &lt;= min, else max if a &gt;= max, else a.
      */
     public static float toRange(float min, float max, float a) {
         if (a <= min) {
@@ -1390,7 +1390,7 @@ public strictfp final class NumbersUtils {
      * @param min A value.
      * @param max A value.
      * @param a A value.
-     * @return min if a <= min, else max if a >= max, else a.
+     * @return min if a &lt;= min, else max if a &gt;= max, else a.
      */
     public static double toRange(double min, double max, double a) {
         if (a <= min) {

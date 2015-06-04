@@ -45,7 +45,7 @@ public class GaussianDensityLayerPlot extends LayerPlot {
 
 	/** Build a gauss quantile plot based on given plot. The quantile is drawn as a gaussian gradient from the base plot dots.
 	 * @param p base plot
-	 * @param a axis number of quantile : 0=X quantile, 1=Y quantile, 2=Z quantile
+	 * @param ax axis number of quantile : 0=X quantile, 1=Y quantile, 2=Z quantile
 	 * @param sigma array of standard deviation values
 	 */
 	public GaussianDensityLayerPlot(Plot p, int ax, double[] sigma) {

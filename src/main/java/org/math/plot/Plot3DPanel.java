@@ -60,8 +60,6 @@ public class Plot3DPanel extends PlotPanel {
      * @see #addLinePlot(String,Color,double[]...)
      * @see #addBarPlot(String, Color, double[]...)
      * @see #addBoxPlot(String, Color, double[][], double[][])
-     * @see #addHistogramPlot(String, Color, double[][], double[])
-     * @see #addStaircasePlot(String, Color, double[]...)
      */
     public int addScatterPlot(String name, Color color, double[][] XY) {
         return ((Plot3DCanvas) plotCanvas).addScatterPlot(name, color, XY);
@@ -99,8 +97,6 @@ public class Plot3DPanel extends PlotPanel {
      * @see #addScatterPlot(String,Color,double[]...)
      * @see #addBarPlot(String, Color, double[]...)
      * @see #addBoxPlot(String, Color, double[]... )
-     * @see #addHistogramPlot(String, Color, double[]...)
-     * @see #addStaircasePlot(String, Color, double[]...)
      */
     public int addLinePlot(String name, Color color, double[][] XY) {
         return ((Plot3DCanvas) plotCanvas).addLinePlot(name, color, XY);
@@ -138,8 +134,6 @@ public class Plot3DPanel extends PlotPanel {
      * @see #addScatterPlot(String,Color,double[]...)
      * @see #addLinePlot(String, Color, double[]...)
      * @see #addBoxPlot(String, Color, double[]... )
-     * @see #addHistogramPlot(String, Color, double[]...)
-     * @see #addStaircasePlot(String, Color, double[]...)
      */
     public int addBarPlot(String name, Color color, double[][] XY) {
         return ((Plot3DCanvas) plotCanvas).addBarPlot(name, color, XY);
