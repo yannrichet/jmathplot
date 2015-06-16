@@ -21,12 +21,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.github.yannrichet</groupId>
-			<artifactId>jmathio</artifactId>
+			<artifactId>JMathIO</artifactId>
 			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.yannrichet</groupId>
-			<artifactId>jmatharray</artifactId>
+			<artifactId>JMathArray</artifactId>
 			<version>1.0</version>
 		</dependency>
 	</dependencies>
