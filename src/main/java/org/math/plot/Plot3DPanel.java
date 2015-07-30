@@ -232,21 +232,22 @@ public class Plot3DPanel extends PlotPanel {
     }
 
     @Override
-    public int addPlot(String type, String name, Color c, double[]... XY) {
-        if (type.equalsIgnoreCase(SCATTER)) {
-            return addScatterPlot(name, c, XY);
-        } else if (type.equalsIgnoreCase(LINE)) {
-            return addLinePlot(name, c, XY);
-        } else if (type.equalsIgnoreCase(BAR)) {
-            return addBarPlot(name, c, XY);
-        } else if (type.equalsIgnoreCase(HISTOGRAM)) {
-            return addHistogramPlot(name, c, XY);
-        } else if (type.equalsIgnoreCase(BOX)) {
-            return addBoxPlot(name, c, XY);
-        } else if (type.equalsIgnoreCase(GRID)) {
-            return addGridPlot(name, c, XY);
-        } else {
-            throw new IllegalArgumentException("Plot type is unknown : " + type);
+    public int addPlot(Type type, String name, Color color, double[]... XY) {
+        switch ( type ) {
+            case SCATTER:
+                return addScatterPlot(name, color, XY);
+            case LINE:
+                return addLinePlot(name, color, XY);
+            case BAR:
+                return addBarPlot(name, color, XY);
+            case HISTOGRAM:
+                return addHistogramPlot(name, color, XY);
+            case BOX:
+                return addBoxPlot(name, color, XY);
+            case GRID:
+                return addGridPlot(name, color, XY);
+            default:
+                throw new IllegalArgumentException("Plot type is unknown : " + type);
         }
     }
 

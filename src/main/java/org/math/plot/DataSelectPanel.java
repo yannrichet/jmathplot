@@ -787,13 +787,13 @@ public class DataSelectPanel extends JPanel {
                 System.err.println("plotting ...");
                 if (pp.getPlots().size() == 0) {
                     System.err.println("   new");
-                    pp.addPlot("SCATTER", "data", pp.mapData(getSelectedProjectedData()));
+                    pp.addPlot(PlotPanel.Type.SCATTER, "data", pp.mapData(getSelectedProjectedData()));
                 } else {
                     System.err.println(" existing");
                     if (from != null && from.endsWith("axis")) {
                         pp.resetMapData();
                         pp.removeAllPlots();
-                        pp.addPlot("SCATTER", "data", pp.mapData(getSelectedProjectedData()));
+                        pp.addPlot(PlotPanel.Type.SCATTER, "data", pp.mapData(getSelectedProjectedData()));
                     } else {
                         pp.getPlot(0).setData(pp.mapData(getSelectedProjectedData()));
                     }

@@ -32,22 +32,21 @@ import org.math.plot.utils.Array;
  */
 public abstract class PlotPanel extends JPanel {
 
+    public enum Type {
+        SCATTER, LINE, BAR, HISTOGRAM, BOX, STAIRCASE, GRID;
+    }
+
     private static final long serialVersionUID = 1L;
     public PlotToolBar plotToolBar;
     public PlotCanvas plotCanvas;
     public LegendPanel plotLegend;
+
     public final static String EAST = BorderLayout.EAST;
     public final static String SOUTH = BorderLayout.SOUTH;
     public final static String NORTH = BorderLayout.NORTH;
     public final static String WEST = BorderLayout.WEST;
     public final static String INVISIBLE = "INVISIBLE";
-    public final static String SCATTER = "SCATTER";
-    public final static String LINE = "LINE";
-    public final static String BAR = "BAR";
-    public final static String HISTOGRAM = "HISTOGRAM";
-    public final static String BOX = "BOX";
-    public final static String STAIRCASE = "STAIRCASE";
-    public final static String GRID = "GRID";
+
     public final static Color[] COLORLIST = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.ORANGE, Color.PINK, Color.CYAN, Color.MAGENTA};
     private Font font = new Font("Arial", Font.PLAIN, 10);
 
@@ -383,11 +382,11 @@ public abstract class PlotPanel extends JPanel {
         return COLORLIST[plotCanvas.plots.size() % COLORLIST.length];
     }
 
-    public int addPlot(String type, String name, double[]... v) {
+    public int addPlot(Type type, String name, double[]... v) {
         return addPlot(type, name, getNewColor(), v);
     }
 
-    public abstract int addPlot(String type, String name, Color c, double[]... v);
+    public abstract int addPlot(Type type, String name, Color c, double[]... v);
 
     public void setPlot(int I, Plot p) {
         plotCanvas.setPlot(I, p);
@@ -494,7 +493,7 @@ public abstract class PlotPanel extends JPanel {
         try {
 
             String leg = "INVISIBLE";
-            String type = SCATTER;
+            String type = "SCATTER";
             String name = "";
 
             double[][] v = null;
@@ -580,7 +579,10 @@ public abstract class PlotPanel extends JPanel {
                                 n = p2d.addCloudPlot(name, ASCIIFile.readDoubleArray(input_file), Integer.parseInt(type.substring(8, type.indexOf(","))),
                                         Integer.parseInt(type.substring(type.indexOf(",") + 1, type.length() - 1)));
                             } else {
-                                p2d.addPlot(type, name, ASCIIFile.readDoubleArray(input_file));
+                                for (Type t : Type.values()) {
+                                    if (t.name().equalsIgnoreCase(type))
+                                        p2d.addPlot(t, name, ASCIIFile.readDoubleArray(input_file));
+                                }
                             }
                         } else {
                             Plot3DPanel p3d = (Plot3DPanel) p;
@@ -599,7 +601,10 @@ public abstract class PlotPanel extends JPanel {
                                 n = p3d.addCloudPlot(name, ASCIIFile.readDoubleArray(input_file), Integer.parseInt(type.substring(8, type.indexOf(","))),
                                         Integer.parseInt(type.substring(type.indexOf(",") + 1, type.indexOf(",", type.indexOf(",") + 1))), Integer.parseInt(type.substring(type.indexOf(",", type.indexOf(",") + 1) + 1, type.length() - 1)));
                             } else {
-                                p3d.addPlot(type, name, ASCIIFile.readDoubleArray(input_file));
+                                for (Type t : Type.values()) {
+                                    if (t.name().equalsIgnoreCase(type))
+                                        p3d.addPlot(t, name, ASCIIFile.readDoubleArray(input_file));
+                                }
                             }
                         }
 
