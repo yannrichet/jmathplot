@@ -94,7 +94,7 @@ public abstract class PlotPanel extends JPanel {
             plotLegend = new LegendPanel(this, LegendPanel.INVISIBLE);
             // add(legends, BorderLayout.NORTH);
         } else {
-            System.err.println("Orientation " + location + " is unknonw.");
+            System.err.println("Orientation " + location + " is unknown.");
         }
     }
 
@@ -150,7 +150,7 @@ public abstract class PlotPanel extends JPanel {
             plotToolBar.setFloatable(false);
             add(plotToolBar, NORTH);
         } else {
-            System.err.println("Location " + location + " is unknonw.");
+            System.err.println("Location " + location + " is unknown.");
         }
     }
 
