@@ -43,8 +43,8 @@ Or include maven dependency:
 ...
     <dependency>
       <groupId>com.github.yannrichet</groupId>
-      <artifactId>jmathplot</artifactId>
-      <version>1.0</version>
+      <artifactId>JMathPlot</artifactId>
+      <version>1.0.1</version>
     </dependency>
 ...
 </dependencies>
