@@ -21,6 +21,10 @@ public class BoxPlot3D extends Plot {
     double[][] XY;
 
     public BoxPlot3D(double[][] _XY, double[][] w, Color c, String n) {
+        this(_XY, w, new Color[] { c }, n);
+    }
+
+    public BoxPlot3D(double[][] _XY, double[][] w, Color[] c, String n) {
         super(n, c);
         XY = _XY;
         widths = w;
@@ -51,14 +55,22 @@ public class BoxPlot3D extends Plot {
         }
     }
 
-    public void plot(AbstractDrawer draw, Color c) {
+    public void plot(AbstractDrawer draw, Color[] c) {
         if (!visible) {
             return;
         }
+        
+        boolean monoColor = false;
+        if (c.length == 1) {
+        	monoColor = true;
+        }
+        else if (c.length != XY.length) {
+        	throw new IllegalArgumentException("Color array length must match length of data array length. ");
+        }
 
-        draw.setColor(c);
         draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
         for (int i = 0; i < XY.length; i++) {
+        	draw.setColor(monoColor ? c[0] : c[i]);
             draw.drawLine(new double[]{Xmin[i], Ymin[i], Zmin[i]}, new double[]{Xmax[i], Ymin[i], Zmin[i]});
             draw.drawLine(new double[]{Xmax[i], Ymin[i], Zmin[i]}, new double[]{Xmax[i], Ymax[i], Zmin[i]});
             draw.drawLine(new double[]{Xmax[i], Ymax[i], Zmin[i]}, new double[]{Xmin[i], Ymax[i], Zmin[i]});
@@ -133,7 +145,25 @@ public class BoxPlot3D extends Plot {
             }
             int receiverPlotDataIndex = plotpanel.addBoxPlot("Receivers", Color.orange, receiverXYZ);
         }
-
+        plotpanel.setLegendOrientation(PlotPanel.SOUTH);
+        new FrameView(plotpanel).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        
+        plotpanel = new Plot3DPanel();
+        for (int i = 0; i < 1; i++) {
+            double[][] receiverXYZ = new double[100][6];
+            Color[] c = new Color[100];
+            for (int j = 0; j < receiverXYZ.length; j++) {
+                receiverXYZ[j][0] = /*1 + */ Math.random();
+                receiverXYZ[j][1] = /*100 * */ Math.random();
+                receiverXYZ[j][2] = /*100 * */ Math.random();
+                receiverXYZ[j][3] = /*1 + */ Math.random() / 10;
+                receiverXYZ[j][4] = /*100 * */ Math.random() / 10;
+                receiverXYZ[j][5] = /*100 * */ Math.random() / 10;
+                c[j] = new Color((int)(Math.random() * 0x1000000));
+            }
+            int receiverPlotDataIndex = plotpanel.addBoxPlot("Receivers", c, receiverXYZ);
+        }
         plotpanel.setLegendOrientation(PlotPanel.SOUTH);
         new FrameView(plotpanel).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

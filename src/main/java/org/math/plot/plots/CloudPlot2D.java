@@ -25,6 +25,10 @@ public class CloudPlot2D extends Plot {
     boolean fill_shape = true;
 
     public CloudPlot2D(String n, Color c, double[][] _XYcard, double wX, double wY) {
+        this(n, new Color[] { c }, _XYcard, wX, wY);
+    }
+
+    public CloudPlot2D(String n, Color[] c, double[][] _XYcard, double wX, double wY) {
         super(n, c);
         splitXYf(_XYcard);
         width_constant = new double[]{wX, wY};
@@ -64,18 +68,26 @@ public class CloudPlot2D extends Plot {
         }
     }
 
-    public void plot(AbstractDrawer draw, Color c) {
+    public void plot(AbstractDrawer draw, Color[] c) {
         if (!visible) {
             return;
+        }
+        
+        boolean monoColor = false;
+        if (c.length == 1) {
+        	monoColor = true;
+        }
+        else if (c.length != XY.length) {
+        	throw new IllegalArgumentException("Color array length must match length of data array. ");
         }
 
         draw.canvas.includeInBounds(SW[0]);
         draw.canvas.includeInBounds(NE[XY.length - 1]);
 
-        draw.setColor(c);
         draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
         for (int i = 0; i < XY.length; i++) {
             if (f[i] > 0) {
+            	draw.setColor(monoColor ? c[0] : c[i]);
                 draw.fillPolygon(f[i], NW[i], NE[i], SE[i], SW[i]);
             }
         }
@@ -130,6 +142,31 @@ public class CloudPlot2D extends Plot {
             cloud2[i][1] = 2 + Math.random() + Math.random();
         }
         p.addCloudPlot("cloud2", Color.RED, cloud2, 5, 5);
+
+        p.setLegendOrientation(PlotPanel.SOUTH);
+        new FrameView(p).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        
+        Color[] c = new Color[5 * 5];
+        for (int i = 0; i < c.length; i++) {
+            c[i] = new Color((int)(Math.random() * 0x1000000));
+        }
+        
+        p = new Plot2DPanel();
+
+        cloud = new double[100][2];
+        for (int i = 0; i < cloud.length; i++) {
+            cloud[i][0] = Math.random() + Math.random();
+            cloud[i][1] = Math.random() + Math.random();
+        }
+        p.addCloudPlot("cloud", c, cloud, 5, 5);
+
+        cloud2 = new double[100][2];
+        for (int i = 0; i < cloud2.length; i++) {
+            cloud2[i][0] = 2 + Math.random() + Math.random();
+            cloud2[i][1] = 2 + Math.random() + Math.random();
+        }
+        p.addCloudPlot("cloud2", c, cloud2, 5, 5);
 
         p.setLegendOrientation(PlotPanel.SOUTH);
         new FrameView(p).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

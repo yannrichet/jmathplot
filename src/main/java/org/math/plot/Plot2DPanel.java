@@ -74,11 +74,23 @@ public class Plot2DPanel extends PlotPanel {
         return ((Plot2DCanvas) plotCanvas).addScatterPlot(name, color, XY);
     }
     
+    public int addScatterPlot(String name, Color[] color, double[][] XY) {
+        return ((Plot2DCanvas) plotCanvas).addScatterPlot(name, color, XY);
+    }
+    
     public int addScatterPlot(String name, Color color, double[] Y) {
         return ((Plot2DCanvas) plotCanvas).addScatterPlot(name, color, Y);
     }
     
+    public int addScatterPlot(String name, Color[] color, double[] Y) {
+        return ((Plot2DCanvas) plotCanvas).addScatterPlot(name, color, Y);
+    }
+    
     public int addScatterPlot(String name, Color color, double[] X, double[] Y) {
+        return ((Plot2DCanvas) plotCanvas).addScatterPlot(name, color, X,Y);
+    }
+    
+    public int addScatterPlot(String name, Color[] color, double[] X, double[] Y) {
         return ((Plot2DCanvas) plotCanvas).addScatterPlot(name, color, X,Y);
     }
     
@@ -121,11 +133,23 @@ public class Plot2DPanel extends PlotPanel {
         return ((Plot2DCanvas) plotCanvas).addLinePlot(name, color, XY);
     }
     
+    public int addLinePlot(String name, Color[] color, double[][] XY) {
+        return ((Plot2DCanvas) plotCanvas).addLinePlot(name, color, XY);
+    }
+    
     public int addLinePlot(String name, Color color, double[] Y) {
         return ((Plot2DCanvas) plotCanvas).addLinePlot(name, color, Y);
     }
     
+    public int addLinePlot(String name, Color[] color, double[] Y) {
+        return ((Plot2DCanvas) plotCanvas).addLinePlot(name, color, Y);
+    }
+    
     public int addLinePlot(String name, Color color, double[] X, double[] Y) {
+        return ((Plot2DCanvas) plotCanvas).addLinePlot(name, color, X,Y);
+    }
+    
+    public int addLinePlot(String name, Color[] color, double[] X, double[] Y) {
         return ((Plot2DCanvas) plotCanvas).addLinePlot(name, color, X,Y);
     }
     
@@ -168,11 +192,23 @@ public class Plot2DPanel extends PlotPanel {
         return ((Plot2DCanvas) plotCanvas).addBarPlot(name, color, XY);
     }
     
+    public int addBarPlot(String name, Color[] color, double[][] XY) {
+        return ((Plot2DCanvas) plotCanvas).addBarPlot(name, color, XY);
+    }
+    
     public int addBarPlot(String name, Color color, double[] Y) {
         return ((Plot2DCanvas) plotCanvas).addBarPlot(name, color, Y);
     }
     
+    public int addBarPlot(String name, Color[] color, double[] Y) {
+        return ((Plot2DCanvas) plotCanvas).addBarPlot(name, color, Y);
+    }
+    
     public int addBarPlot(String name, Color color, double[] X, double[] Y) {
+        return ((Plot2DCanvas) plotCanvas).addBarPlot(name, color, X,Y);
+    }
+    
+    public int addBarPlot(String name, Color[] color, double[] X, double[] Y) {
         return ((Plot2DCanvas) plotCanvas).addBarPlot(name, color, X,Y);
     }
     
@@ -215,11 +251,23 @@ public class Plot2DPanel extends PlotPanel {
         return ((Plot2DCanvas) plotCanvas).addStaircasePlot(name, color, XY);
     }
     
+    public int addStaircasePlot(String name, Color[] color, double[][] XY) {
+        return ((Plot2DCanvas) plotCanvas).addStaircasePlot(name, color, XY);
+    }
+    
     public int addStaircasePlot(String name, Color color, double[] Y) {
         return ((Plot2DCanvas) plotCanvas).addStaircasePlot(name, color, Y);
     }
     
+    public int addStaircasePlot(String name, Color[] color, double[] Y) {
+        return ((Plot2DCanvas) plotCanvas).addStaircasePlot(name, color, Y);
+    }
+    
     public int addStaircasePlot(String name, Color color, double[] X,double[] Y) {
+        return ((Plot2DCanvas) plotCanvas).addStaircasePlot(name, color, X,Y);
+    }
+    
+    public int addStaircasePlot(String name, Color[] color, double[] X,double[] Y) {
         return ((Plot2DCanvas) plotCanvas).addStaircasePlot(name, color, X,Y);
     }
     
@@ -256,6 +304,10 @@ public class Plot2DPanel extends PlotPanel {
         return ((Plot2DCanvas) plotCanvas).addBoxPlot(name, color, XY, dXdY);
     }
     
+    public int addBoxPlot(String name, Color[] color, double[][] XY, double[][] dXdY) {
+        return ((Plot2DCanvas) plotCanvas).addBoxPlot(name, color, XY, dXdY);
+    }
+    
     public int addBoxPlot(String name, double[][] XY, double[][] dXdY) {
         return addBoxPlot(name, getNewColor(), XY, dXdY);
     }
@@ -276,6 +328,10 @@ public class Plot2DPanel extends PlotPanel {
      * @see #addLinePlot(String, Color, double[]...)
      */
     public int addBoxPlot(String name, Color color, double[][] XYdXdY) {
+        return ((Plot2DCanvas) plotCanvas).addBoxPlot(name, color, XYdXdY);
+    }
+    
+    public int addBoxPlot(String name, Color[] color, double[][] XYdXdY) {
         return ((Plot2DCanvas) plotCanvas).addBoxPlot(name, color, XYdXdY);
     }
     
@@ -303,11 +359,19 @@ public class Plot2DPanel extends PlotPanel {
         return ((Plot2DCanvas) plotCanvas).addHistogramPlot(name, color, XY, dX);
     }
     
+    public int addHistogramPlot(String name, Color[] color, double[][] XY, double[] dX) {
+        return ((Plot2DCanvas) plotCanvas).addHistogramPlot(name, color, XY, dX);
+    }
+    
     public int addHistogramPlot(String name, double[][] XY, double[] dX) {
         return addHistogramPlot(name, getNewColor(), XY, dX);
     }
     
     public int addHistogramPlot(String name, Color color, double[][] XYdX) {
+        return ((Plot2DCanvas) plotCanvas).addHistogramPlot(name, color, XYdX);
+    }
+    
+    public int addHistogramPlot(String name, Color[] color, double[][] XYdX) {
         return ((Plot2DCanvas) plotCanvas).addHistogramPlot(name, color, XYdX);
     }
     
@@ -342,6 +406,10 @@ public class Plot2DPanel extends PlotPanel {
         return ((Plot2DCanvas) plotCanvas).addHistogramPlot(name, color, sample, n);
     }
     
+    public int addHistogramPlot(String name, Color[] color, double[] sample, int n) {
+        return ((Plot2DCanvas) plotCanvas).addHistogramPlot(name, color, sample, n);
+    }
+    
     public int addHistogramPlot(String name, double[] X, int n) {
         return addHistogramPlot(name, getNewColor(), X, n);
     }
@@ -360,6 +428,10 @@ public class Plot2DPanel extends PlotPanel {
         return ((Plot2DCanvas) plotCanvas).addHistogramPlot(name, color, sample, bounds);
     }
     
+    public int addHistogramPlot(String name, Color[] color, double[] sample, double... bounds) {
+        return ((Plot2DCanvas) plotCanvas).addHistogramPlot(name, color, sample, bounds);
+    }
+    
     public int addHistogramPlot(String name, double[] X, double... bounds) {
         return addHistogramPlot(name, getNewColor(), X, bounds);
     }
@@ -368,11 +440,19 @@ public class Plot2DPanel extends PlotPanel {
         return ((Plot2DCanvas) plotCanvas).addHistogramPlot(name, color, X, min, max, n);
     }
     
+    public int addHistogramPlot(String name, Color[] color, double[] X, double min, double max, int n) {
+        return ((Plot2DCanvas) plotCanvas).addHistogramPlot(name, color, X, min, max, n);
+    }
+    
     public int addHistogramPlot(String name, double[] X, double min, double max, int n) {
         return addHistogramPlot(name, getNewColor(), X, min, max, n);
     }
     
     public int addCloudPlot(String name, Color color, double[][] sampleXY, int nX, int nY) {
+        return ((Plot2DCanvas) plotCanvas).addCloudPlot(name, color, sampleXY, nX,nY);
+    }
+    
+    public int addCloudPlot(String name, Color[] color, double[][] sampleXY, int nX, int nY) {
         return ((Plot2DCanvas) plotCanvas).addCloudPlot(name, color, sampleXY, nX,nY);
     }
     
@@ -397,6 +477,30 @@ public class Plot2DPanel extends PlotPanel {
         } else {
             throw new IllegalArgumentException("Plot type is unknown : " + type);
         }
+    }
+    
+    @Override
+    public int addPlot(String type, String name, Color[] color, double[]... XY) {
+        if (type.equalsIgnoreCase(SCATTER)) {
+            return addScatterPlot(name, color, XY);
+        } else if (type.equalsIgnoreCase(LINE)) {
+            return addLinePlot(name, color, XY);
+        } else if (type.equalsIgnoreCase(BAR)) {
+            return addBarPlot(name, color, XY);
+        } else if (type.equalsIgnoreCase(STAIRCASE)) {
+            return addStaircasePlot(name, color, XY);
+        } else if (type.equalsIgnoreCase(HISTOGRAM)) {
+            return addHistogramPlot(name, color, XY);
+        } else if (type.equalsIgnoreCase(BOX)) {
+            return addBoxPlot(name, color, XY);
+        } else {
+            throw new IllegalArgumentException("Plot type is unknown : " + type);
+        }
+    }
+    
+    @Override
+    public int addPlot(String type, String name, Color[][] color, double[]... XY) {
+    	throw new IllegalArgumentException("Plot type is unknown : " + type);
     }
     
 }

@@ -43,11 +43,9 @@ public class VectorLayerPlot extends LayerPlot {
 		return V;
 	}
 
-	public void plot(AbstractDrawer draw, Color c) {
+	public void plot(AbstractDrawer draw, Color[] c) {
 		if (!plot.visible)
 			return;
-
-		draw.setColor(c);
 
 		draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
 
@@ -56,6 +54,7 @@ public class VectorLayerPlot extends LayerPlot {
 			for (int j = 0; j < d.length; j++) {
 				d[j] += V[i][j];
 			}
+			draw.setColor(c.length > 1 ? c[i] : c[0]);
 			draw.drawLine(plot.getData()[i], d);
 			//TODO: draw arrow at position d
 
@@ -75,6 +74,22 @@ public class VectorLayerPlot extends LayerPlot {
 			dXYZ[j][1] = Math.log(XYZ[j][0])/Math.sqrt(1+Math.log(XYZ[j][0])*Math.log(XYZ[j][0]));
 		}
 		p2.addScatterPlot("toto", XYZ);
+
+		p2.addVectortoPlot(0, dXYZ);
+		new FrameView(p2).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+
+		Color[] c = new Color[100];
+		p2 = new Plot2DPanel();
+
+		for (int j = 0; j < XYZ.length; j++) {
+			XYZ[j][0] = Math.random()*10;
+			XYZ[j][1] = Math.random()*10;
+			dXYZ[j][0] = 1.0/Math.sqrt(1+Math.log(XYZ[j][0])*Math.log(XYZ[j][0]));
+			dXYZ[j][1] = Math.log(XYZ[j][0])/Math.sqrt(1+Math.log(XYZ[j][0])*Math.log(XYZ[j][0]));
+			c[j] = new Color((int)(Math.random() * 0x1000000));
+		}
+		p2.addScatterPlot("toto", c, XYZ);
 
 		p2.addVectortoPlot(0, dXYZ);
 		new FrameView(p2).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -24,12 +24,25 @@ public class HistogramPlot2D extends Plot {
         this(n, c, _XY, w, 0.5, 1);
     }
 
+    public HistogramPlot2D(String n, Color[] c, double[][] _XY, double w) {
+        this(n, c, _XY, w, 0.5, 1);
+    }
+
     public HistogramPlot2D(String n, Color c, double[][] _XY, double[] w) {
+        this(n, c, _XY, w, 0.5, 1);
+    }
+
+    public HistogramPlot2D(String n, Color[] c, double[][] _XY, double[] w) {
         this(n, c, _XY, w, 0.5, 1);
     }
 
     // TODO Histogram group plots
     public HistogramPlot2D(String n, Color c, double[][] _XY, double w, double _offsetCenter_perWidth, double _factorWidth) {
+        this(n, new Color[] { c }, _XY, w, _offsetCenter_perWidth, _factorWidth);
+    }
+
+    // TODO Histogram group plots
+    public HistogramPlot2D(String n, Color[] c, double[][] _XY, double w, double _offsetCenter_perWidth, double _factorWidth) {
         super(n, c);
         XY = _XY;
         width_constant = w;
@@ -42,6 +55,10 @@ public class HistogramPlot2D extends Plot {
     }
 
     public HistogramPlot2D(String n, Color c, double[][] _XY, double[] w, double _offsetCenter_perWidth, double _factorWidth) {
+        this(n, new Color[] { c }, _XY, w, _offsetCenter_perWidth, _factorWidth);
+    }
+
+    public HistogramPlot2D(String n, Color[] c, double[][] _XY, double[] w, double _offsetCenter_perWidth, double _factorWidth) {
         super(n, c);
         XY = _XY;
         widths = w;
@@ -111,14 +128,22 @@ public class HistogramPlot2D extends Plot {
      * bottomRight[datas.length - 1] = new double[] { datas[datas.length - 1][0] +
      * (datas[datas.length - 1][0] - datas[datas.length - 2][0]) / 2, 0 }; }
      */
-    public void plot(AbstractDrawer draw, Color c) {
+    public void plot(AbstractDrawer draw, Color[] c) {
         if (!visible) {
             return;
         }
+        
+        boolean monoColor = false;
+        if (c.length == 1) {
+        	monoColor = true;
+        }
+        else if (c.length != XY.length) {
+        	throw new IllegalArgumentException("Color array length must match length of data array. ");
+        }
 
-        draw.setColor(c);
         draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
         for (int i = 0; i < XY.length; i++) {
+        	draw.setColor(monoColor ? c[0] : c[i]);
             draw.drawLine(bottomLeft[i], topLeft[i]);
             draw.drawLine(topLeft[i], topRight[i]);
             draw.drawLine(topRight[i], bottomRight[i]);
@@ -196,6 +221,15 @@ public class HistogramPlot2D extends Plot {
         }
         Plot2DPanel p = new Plot2DPanel("SOUTH");
         p.addHistogramPlot("test", X, 10);
+        new FrameView(p);
+
+
+		Color[] c = new Color[10];
+        for (int i = 0; i < c.length; i++) {
+			c[i] = new Color((int)(Math.random() * 0x1000000));
+        }
+        p = new Plot2DPanel("SOUTH");
+        p.addHistogramPlot("test", c, X, 10);
         new FrameView(p);
     }
 }

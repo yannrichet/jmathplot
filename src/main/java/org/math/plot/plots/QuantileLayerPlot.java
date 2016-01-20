@@ -76,41 +76,43 @@ public class QuantileLayerPlot extends LayerPlot {
 		return quantileRate;
 	}
 
-	public void plot(AbstractDrawer draw, Color c) {
+	public void plot(AbstractDrawer draw, Color[] c) {
 		if (!plot.visible)
 			return;
 
-		draw.setColor(c);
-		gradC = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255 * (1 - quantileRate)));
 
 		draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
 		draw.setLineWidth(WIDTH);
 		if (main_data_constant == 0)
 			for (int i = 0; i < plot.getData().length; i++) {
+				Color c0 = (c.length > 1 ? c[i] : c[0]);
+				gradC = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255 * (1 - quantileRate)));
 				double[] d = Array.getRowCopy(plot.getData(), i);
 				d[axe] += Q[i];///quantileRate;
-				draw.setGradient(plot.getData()[i], c, d, gradC);
+				draw.setGradient(plot.getData()[i], c0, d, gradC);
 				draw.drawLine(plot.getData()[i], d);
 				// draw.drawDot(d, RADIUS/*(int)(RADIUS*quantileRate)*/);
 
 				if (symetric) {
 					d[axe] -= 2 * Q[i];///quantileRate;
-					draw.setGradient(plot.getData()[i], c, d, gradC);
+					draw.setGradient(plot.getData()[i], c0, d, gradC);
 					draw.drawLine(plot.getData()[i], d);
 					// draw.drawDot(d, RADIUS/*(int)(RADIUS*quantileRate)*/);
 				}
 			}
 		else
 			for (int i = 0; i < plot.getData().length; i++) {
+				Color c0 = (c.length > 1 ? c[i] : c[0]);
+				gradC = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255 * (1 - quantileRate)));
 				double[] d = Array.getRowCopy(plot.getData(), i);
 				d[axe] += main_data_constant;///quantileRate;
-				draw.setGradient(plot.getData()[i], c, d, gradC);
+				draw.setGradient(plot.getData()[i], c0, d, gradC);
 				draw.drawLine(plot.getData()[i], d);
 				// draw.drawDot(d, shape/*RADIUS/*(int)(RADIUS*quantileRate)*/);
 
 				if (symetric) {
 					d[axe] -= 2 * main_data_constant;///quantileRate;
-					draw.setGradient(plot.getData()[i], c, d, gradC);
+					draw.setGradient(plot.getData()[i], c0, d, gradC);
 					draw.drawLine(plot.getData()[i], d);
 					// draw.drawDot(d, RADIUS/*(int)(RADIUS*quantileRate)*/);
 				}
@@ -140,6 +142,19 @@ public class QuantileLayerPlot extends LayerPlot {
 			}
 			p2.addScatterPlot("toto" + i, XYZ);
 		}
+		p2.addQuantiletoPlot(0, 1, 1.0, true, 0.2);
+		new FrameView(p2).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+
+		Color[] c = new Color[10];
+		p2 = new Plot2DPanel();
+		double[][] XYZ = new double[10][2];
+		for (int j = 0; j < XYZ.length; j++) {
+			XYZ[j][0] = /*1 + */Math.random();
+			XYZ[j][1] = /*100 * */Math.random();
+			c[j] = new Color((int)(Math.random() * 0x1000000));
+		}
+		p2.addScatterPlot("toto", c, XYZ);
 		p2.addQuantiletoPlot(0, 1, 1.0, true, 0.2);
 		new FrameView(p2).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
