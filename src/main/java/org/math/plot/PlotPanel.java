@@ -388,6 +388,8 @@ public abstract class PlotPanel extends JPanel {
     }
 
     public abstract int addPlot(String type, String name, Color c, double[]... v);
+    public abstract int addPlot(String type, String name, Color[] c, double[]... v);
+    public abstract int addPlot(String type, String name, Color[][] c, double[]... v);
 
     public void setPlot(int I, Plot p) {
         plotCanvas.setPlot(I, p);

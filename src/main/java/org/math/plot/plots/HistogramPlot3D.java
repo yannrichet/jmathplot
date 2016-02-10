@@ -22,6 +22,10 @@ public class HistogramPlot3D extends Plot {
     boolean fill_shape = true;
 
     public HistogramPlot3D(String n, Color c, double[][] _XY, double[][] w) {
+        this(n, new Color[] { c }, _XY, w);
+    }
+
+    public HistogramPlot3D(String n, Color[] c, double[][] _XY, double[][] w) {
         super(n, c);
         XY = _XY;
         widths = w;
@@ -30,6 +34,10 @@ public class HistogramPlot3D extends Plot {
     }
 
     public HistogramPlot3D(String n, Color c, double[][] _XY, double wX, double wY) {
+        this(n, new Color[] { c }, _XY, wX, wY);
+    }
+
+    public HistogramPlot3D(String n, Color[] c, double[][] _XY, double wX, double wY) {
         super(n, c);
         XY = _XY;
         width_constant = new double[]{wX, wY};
@@ -38,6 +46,10 @@ public class HistogramPlot3D extends Plot {
     }
 
     public HistogramPlot3D(String n, Color c, double[][] _XY, double[] w) {
+        this(n, new Color[] { c }, _XY, w);
+    }
+
+    public HistogramPlot3D(String n, Color[] c, double[][] _XY, double[] w) {
         super(n, c);
         XY = _XY;
         width_constant = w;
@@ -87,17 +99,25 @@ public class HistogramPlot3D extends Plot {
         }
     }
 
-    public void plot(AbstractDrawer draw, Color c) {
+    public void plot(AbstractDrawer draw, Color[] c) {
         if (!visible) {
             return;
+        }
+        
+        boolean monoColor = false;
+        if (c.length == 1) {
+        	monoColor = true;
+        }
+        else if (c.length != XY.length) {
+        	throw new IllegalArgumentException("Color array length must match length of data array length. ");
         }
 
         draw.canvas.includeInBounds(bottomSW[0]);
         draw.canvas.includeInBounds(topNE[XY.length - 1]);
 
-        draw.setColor(c);
         draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
         for (int i = 0; i < XY.length; i++) {
+        	draw.setColor(monoColor ? c[0] : c[i]);
             if (topNW[i][2] != bottomNW[i][2]) {
                 draw.drawLine(topNW[i], topNE[i]);
                 draw.drawLine(topNE[i], topSE[i]);
@@ -117,10 +137,13 @@ public class HistogramPlot3D extends Plot {
                 if (fill_shape) {
                     draw.fillPolygon(0.2f, topNW[i], topNE[i], topSE[i], topSW[i]);
                     //draw.fillPolygon(bottomNW[i], bottomNE[i], bottomSE[i], bottomSW[i]);
-				/*draw.fillPolygon(topNW[i], topNE[i], bottomNE[i], bottomNW[i]);
-                    draw.fillPolygon(topSW[i], topSE[i], bottomSE[i], bottomSW[i]);
-                    draw.fillPolygon(topNE[i], topSE[i], bottomSE[i], bottomNE[i]);
-                    draw.fillPolygon(topNW[i], topSW[i], bottomSW[i], bottomNW[i]);*/
+                    if (!monoColor)
+                    {
+	                    draw.fillPolygon(0.2f, topNW[i], topNE[i], bottomNE[i], bottomNW[i]);
+	                    draw.fillPolygon(0.2f, topSW[i], topSE[i], bottomSE[i], bottomSW[i]);
+	                    draw.fillPolygon(0.2f, topNE[i], topSE[i], bottomSE[i], bottomNE[i]);
+	                    draw.fillPolygon(0.2f, topNW[i], topSW[i], bottomSW[i], bottomNW[i]);
+                    }
                 }
             }
         }
@@ -192,6 +215,15 @@ public class HistogramPlot3D extends Plot {
         }
         Plot3DPanel p = new Plot3DPanel("SOUTH");
         p.addHistogramPlot("test", XY, 4, 6);
+        new FrameView(p);
+        
+
+		Color[] c = new Color[4 * 6];
+        for (int i = 0; i < c.length; i++) {
+			c[i] = new Color((int)(Math.random() * 0x1000000));
+        }
+        p = new Plot3DPanel("SOUTH");
+        p.addHistogramPlot("test", c, XY, 4, 6);
         new FrameView(p);
     }
 }

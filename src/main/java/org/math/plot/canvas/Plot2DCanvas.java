@@ -63,16 +63,32 @@ public class Plot2DCanvas extends PlotCanvas {
 	public int addScatterPlot(String name, Color c, double[] Y) {
 		return addPlot(new ScatterPlot(name, c,  convertY(Y)));
 	}
+
+	public int addScatterPlot(String name, Color[] c, double[] Y) {
+		return addPlot(new ScatterPlot(name, c,  convertY(Y)));
+	}
 	
 	public int addScatterPlot(String name, Color c, double[][] XY) {
+		return addPlot(new ScatterPlot(name, c, convertXY(XY)));
+	}
+	
+	public int addScatterPlot(String name, Color[] c, double[][] XY) {
 		return addPlot(new ScatterPlot(name, c, convertXY(XY)));
 	}
 	
 	public int addScatterPlot(String name, Color c, double[] X, double[] Y) {
 		return addPlot(new ScatterPlot(name, c, convertXY(X,Y)));
 	}
+	
+	public int addScatterPlot(String name, Color[] c, double[] X, double[] Y) {
+		return addPlot(new ScatterPlot(name, c, convertXY(X,Y)));
+	}
 
 	public int addLinePlot(String name, Color c, double[] Y) {
+		return addPlot(new LinePlot(name, c, convertY(Y)));
+	}
+
+	public int addLinePlot(String name, Color[] c, double[] Y) {
 		return addPlot(new LinePlot(name, c, convertY(Y)));
 	}
 	
@@ -80,11 +96,23 @@ public class Plot2DCanvas extends PlotCanvas {
 		return addPlot(new LinePlot(name, c, convertXY(XY)));
 	}
 	
+	public int addLinePlot(String name, Color[] c, double[][] XY) {
+		return addPlot(new LinePlot(name, c, convertXY(XY)));
+	}
+	
 	public int addLinePlot(String name, Color c, double[] X, double[] Y) {
+		return addPlot(new LinePlot(name, c, convertXY(X,Y)));
+	}
+	
+	public int addLinePlot(String name, Color[] c, double[] X, double[] Y) {
 		return addPlot(new LinePlot(name, c, convertXY(X,Y)));
 	}
 
 	public int addBarPlot(String name, Color c, double[] Y) {
+		return addPlot(new BarPlot(name, c, convertY(Y)));
+	}
+
+	public int addBarPlot(String name, Color[] c, double[] Y) {
 		return addPlot(new BarPlot(name, c, convertY(Y)));
 	}
 	
@@ -92,11 +120,23 @@ public class Plot2DCanvas extends PlotCanvas {
 		return addPlot(new BarPlot(name, c, convertXY(XY)));
 	}
 	
+	public int addBarPlot(String name, Color[] c, double[][] XY) {
+		return addPlot(new BarPlot(name, c, convertXY(XY)));
+	}
+	
 	public int addBarPlot(String name, Color c, double[] X, double[] Y) {
+		return addPlot(new BarPlot(name, c, convertXY(X,Y)));
+	}
+	
+	public int addBarPlot(String name, Color[] c, double[] X, double[] Y) {
 		return addPlot(new BarPlot(name, c, convertXY(X,Y)));
 	}
 
 	public int addStaircasePlot(String name, Color c, double[] Y) {
+		return addPlot(new StaircasePlot(name, c, convertY(Y)));
+	}
+
+	public int addStaircasePlot(String name, Color[] c, double[] Y) {
 		return addPlot(new StaircasePlot(name, c, convertY(Y)));
 	}
 	
@@ -104,12 +144,23 @@ public class Plot2DCanvas extends PlotCanvas {
 		return addPlot(new StaircasePlot(name, c, convertXY(XY)));
 	}
 	
+	public int addStaircasePlot(String name, Color[] c, double[][] XY) {
+		return addPlot(new StaircasePlot(name, c, convertXY(XY)));
+	}
+	
 	public int addStaircasePlot(String name, Color c, double[] X, double[] Y) {
 		return addPlot(new StaircasePlot(name, c, convertXY(X,Y)));
 	}
 	
-
+	public int addStaircasePlot(String name, Color[] c, double[] X, double[] Y) {
+		return addPlot(new StaircasePlot(name, c, convertXY(X,Y)));
+	}
+	
 	public int addBoxPlot(String name, Color c, double[][] XY, double[][] dX) {
+		return addPlot(new BoxPlot2D(XY, dX, c, name));
+	}
+	
+	public int addBoxPlot(String name, Color[] c, double[][] XY, double[][] dX) {
 		return addPlot(new BoxPlot2D(XY, dX, c, name));
 	}
 
@@ -117,7 +168,15 @@ public class Plot2DCanvas extends PlotCanvas {
 		return addPlot(new BoxPlot2D(getColumnsRangeCopy(XYdX, 0, 1), getColumnsRangeCopy(XYdX, 2, 3), c, name));
 	}
 
+	public int addBoxPlot(String name, Color[] c, double[][] XYdX) {
+		return addPlot(new BoxPlot2D(getColumnsRangeCopy(XYdX, 0, 1), getColumnsRangeCopy(XYdX, 2, 3), c, name));
+	}
+
 	public int addHistogramPlot(String name, Color c, double[][] XY, double[] dX) {
+		return addPlot(new HistogramPlot2D(name, c, XY, dX));
+	}
+
+	public int addHistogramPlot(String name, Color[] c, double[][] XY, double[] dX) {
 		return addPlot(new HistogramPlot2D(name, c, XY, dX));
 	}
 
@@ -125,11 +184,24 @@ public class Plot2DCanvas extends PlotCanvas {
 		return addPlot(new HistogramPlot2D(name, c, XY, dX));
 	}
 
+	public int addHistogramPlot(String name, Color[] c, double[][] XY, double dX) {
+		return addPlot(new HistogramPlot2D(name, c, XY, dX));
+	}
+
 	public int addHistogramPlot(String name, Color c, double[][] XYdX) {
 		return addPlot(new HistogramPlot2D(name, c, getColumnsRangeCopy(XYdX, 0, 1), getColumnCopy(XYdX, 2)));
 	}
 
+	public int addHistogramPlot(String name, Color[] c, double[][] XYdX) {
+		return addPlot(new HistogramPlot2D(name, c, getColumnsRangeCopy(XYdX, 0, 1), getColumnCopy(XYdX, 2)));
+	}
+
 	public int addHistogramPlot(String name, Color c, double[] X, int n) {
+		double[][] XY = histogram_classes(X, n);
+		return addPlot(new HistogramPlot2D(name, c, XY, XY[1][0] - XY[0][0]));
+	}
+
+	public int addHistogramPlot(String name, Color[] c, double[] X, int n) {
 		double[][] XY = histogram_classes(X, n);
 		return addPlot(new HistogramPlot2D(name, c, XY, XY[1][0] - XY[0][0]));
 	}
@@ -139,12 +211,27 @@ public class Plot2DCanvas extends PlotCanvas {
 		return addPlot(new HistogramPlot2D(name, c, XY, XY[1][0] - XY[0][0]));
 	}
 
+	public int addHistogramPlot(String name, Color[] c, double[] X, double... bounds) {
+		double[][] XY = histogram_classes(X, bounds);
+		return addPlot(new HistogramPlot2D(name, c, XY, XY[1][0] - XY[0][0]));
+	}
+
 	public int addHistogramPlot(String name, Color c, double[] X, double min, double max, int n) {
 		double[][] XY = histogram_classes(X, min, max, n);
 		return addPlot(new HistogramPlot2D(name, c, XY, XY[1][0] - XY[0][0]));
 	}
 
+	public int addHistogramPlot(String name, Color[] c, double[] X, double min, double max, int n) {
+		double[][] XY = histogram_classes(X, min, max, n);
+		return addPlot(new HistogramPlot2D(name, c, XY, XY[1][0] - XY[0][0]));
+	}
+
 	public int addCloudPlot(String name, Color c, double[][] sampleXY, int nX, int nY) {
+		double[][] XYh = histogram_classes_2D(sampleXY, nX, nY);
+		return addPlot(new CloudPlot2D(name, c, XYh, XYh[1][0] - XYh[0][0], XYh[nX][1] - XYh[0][1]));
+	}
+
+	public int addCloudPlot(String name, Color[] c, double[][] sampleXY, int nX, int nY) {
 		double[][] XYh = histogram_classes_2D(sampleXY, nX, nY);
 		return addPlot(new CloudPlot2D(name, c, XYh, XYh[1][0] - XYh[0][0], XYh[nX][1] - XYh[0][1]));
 	}

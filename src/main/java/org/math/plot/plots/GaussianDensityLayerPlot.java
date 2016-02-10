@@ -73,20 +73,19 @@ public class GaussianDensityLayerPlot extends LayerPlot {
 		return axis;
 	}
 
-	public void plot(AbstractDrawer draw, Color c) {
+	public void plot(AbstractDrawer draw, Color[] c) {
 		if (!plot.visible)
 			return;
-
-		draw.setColor(c);
 
 		draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
 		draw.setLineWidth(WIDHT);
 		if (constant_sigma == 0)
 			for (int i = 0; i < plot.getData().length; i++) {
-				gradC_0sigma = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255.0 * (gausspdf_sigma[i][0])));
-				gradC_1sigma = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255.0 * (gausspdf_sigma[i][1])));
-				gradC_2sigma = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255.0 * (gausspdf_sigma[i][2])));
-				gradC_3sigma = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255.0 * (gausspdf_sigma[i][3])));
+				Color c0 = (c.length > 1 ? c[i] : c[0]);
+				gradC_0sigma = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255.0 * (gausspdf_sigma[i][0])));
+				gradC_1sigma = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255.0 * (gausspdf_sigma[i][1])));
+				gradC_2sigma = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255.0 * (gausspdf_sigma[i][2])));
+				gradC_3sigma = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255.0 * (gausspdf_sigma[i][3])));
 
 				double[] d = Array.getRowCopy(plot.getData(), i);
 				double[] d2 = Array.getRowCopy(plot.getData(), i);
@@ -121,12 +120,12 @@ public class GaussianDensityLayerPlot extends LayerPlot {
 				draw.drawLine(d2, d);
 			}
 		else {
-			gradC_0sigma = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255.0 * (gausspdf_sigma[0][0])));
-			gradC_1sigma = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255.0 * (gausspdf_sigma[0][1])));
-			gradC_2sigma = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255.0 * (gausspdf_sigma[0][2])));
-			gradC_3sigma = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255.0 * (gausspdf_sigma[0][3])));
-
 			for (int i = 0; i < plot.getData().length; i++) {
+				Color c0 = (c.length > 1 ? c[i] : c[0]);
+				gradC_0sigma = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255.0 * (gausspdf_sigma[0][0])));
+				gradC_1sigma = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255.0 * (gausspdf_sigma[0][1])));
+				gradC_2sigma = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255.0 * (gausspdf_sigma[0][2])));
+				gradC_3sigma = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255.0 * (gausspdf_sigma[0][3])));
 
 				double[] d = Array.getRowCopy(plot.getData(), i);
 				double[] d2 = Array.getRowCopy(plot.getData(), i);
@@ -193,6 +192,23 @@ public class GaussianDensityLayerPlot extends LayerPlot {
 		}
 		p2.getPlot(0).addGaussQuantiles(0, sXYZ);
 		p2.getPlot(1).addGaussQuantiles(1, 0.1);
+
+		new FrameView(p2).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+
+		Color[] c = new Color[10];
+		p2 = new Plot2DPanel();
+		double[][] XYZ = new double[10][2];
+		sXYZ = new double[10];
+		for (int j = 0; j < XYZ.length; j++) {
+			XYZ[j][0] = /*1 + */Math.random();
+			XYZ[j][1] = /*100 * */Math.random();
+			sXYZ[j] = /*100 * */Math.random();
+			c[j] = new Color((int)(Math.random() * 0x1000000));
+		}
+
+		p2.addScatterPlot("toto", c, XYZ);
+		p2.getPlot(0).addGaussQuantiles(0, sXYZ);
 
 		new FrameView(p2).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}

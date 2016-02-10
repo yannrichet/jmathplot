@@ -25,7 +25,7 @@ import org.math.plot.utils.Array;
 public abstract class Plot implements Plotable, Noteable, Editable {
 
     public String name;
-    public Color color;
+    public Color[] colors;
     public boolean visible = true;
     public LinkedList<LayerPlot> layers;
     public boolean noted = false;
@@ -33,9 +33,16 @@ public abstract class Plot implements Plotable, Noteable, Editable {
     //public boolean forcenoted = false;
     public int note_precision = 5;
 
+    public Plot(String n, Color[] c) {
+        name = n;
+        colors = c;
+        layers = new LinkedList<LayerPlot>();
+
+    }
+
     public Plot(String n, Color c) {
         name = n;
-        color = c;
+        colors = new Color[] { c };
         layers = new LinkedList<LayerPlot>();
 
     }
@@ -125,18 +132,27 @@ public abstract class Plot implements Plotable, Noteable, Editable {
      * public String getType() { return type; }
      */
     public Color getColor() {
-        return color;
+        return colors[0];
     }
 
     public void setColor(Color c) {
-        color = c;
+        colors[0] = c;
+    }
+    
+    public Color[] getColors() {
+        return colors;
+    }
+
+    public void setColors(Color[] c) {
+        colors = c;
     }
 
     public abstract double[] isSelected(int[] screenCoordTest, AbstractDrawer draw);
 
     public void note(AbstractDrawer draw) {
-        plot(draw, PlotCanvas.NOTE_COLOR);
-        plotLayerPlots(draw, PlotCanvas.NOTE_COLOR);
+    	Color[] c = new Color [] { PlotCanvas.NOTE_COLOR };
+        plot(draw, c);
+        plotLayerPlots(draw, c);
     }
 
     public void noteCoord(AbstractDrawer draw, double[] coordNoted) {
@@ -149,16 +165,16 @@ public abstract class Plot implements Plotable, Noteable, Editable {
         draw.drawShadowedText(Array.cat("\n", draw.canvas.reverseMapedData(coordNoted)), .5f, coordNoted);
     }
 
-    public abstract void plot(AbstractDrawer draw, Color c);
+    public abstract void plot(AbstractDrawer draw, Color[] c);
 
     public void plot(AbstractDrawer draw) {
         //if (layers.size() > 0)
-        plotLayerPlots(draw, color);
+        plotLayerPlots(draw, colors);
         //else
-        plot(draw, color);
+        plot(draw, colors);
     }
 
-    public void plotLayerPlots(AbstractDrawer draw, Color c) {
+    public void plotLayerPlots(AbstractDrawer draw, Color[] c) {
         for (int i = 0; i < layers.size(); i++) {
             layers.get(i).plot(draw, c);
         }
@@ -170,8 +186,9 @@ public abstract class Plot implements Plotable, Noteable, Editable {
     }
 
     public void editnote(AbstractDrawer draw) {
-        plot(draw, PlotCanvas.EDIT_COLOR);
-        plotLayerPlots(draw, PlotCanvas.EDIT_COLOR);
+    	Color[] c = new Color [] { PlotCanvas.NOTE_COLOR };
+        plot(draw, c);
+        plotLayerPlots(draw, c);
     }
     public DataPanel datapanel = null;
     public PlotCanvas plotCanvas;

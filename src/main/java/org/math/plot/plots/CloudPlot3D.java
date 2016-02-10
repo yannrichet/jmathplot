@@ -29,6 +29,10 @@ public class CloudPlot3D extends Plot {
     boolean fill_shape = true;
 
     public CloudPlot3D(String n, Color c, double[][] _XYcard, double wX, double wY, double wZ) {
+        this(n, new Color[] { c }, _XYcard, wX, wY, wZ);
+    }
+
+    public CloudPlot3D(String n, Color[] c, double[][] _XYcard, double wX, double wY, double wZ) {
         super(n, c);
         splitXYf(_XYcard);
         width_constant = new double[]{wX, wY, wZ};
@@ -77,18 +81,26 @@ public class CloudPlot3D extends Plot {
         }
     }
 
-    public void plot(AbstractDrawer draw, Color c) {
+    public void plot(AbstractDrawer draw, Color[] c) {
         if (!visible) {
             return;
+        }
+        
+        boolean monoColor = false;
+        if (c.length == 1) {
+        	monoColor = true;
+        }
+        else if (c.length != XY.length) {
+        	throw new IllegalArgumentException("Color array length must match length of data array. ");
         }
 
         draw.canvas.includeInBounds(botSW[0]);
         draw.canvas.includeInBounds(topNE[XY.length - 1]);
 
-        draw.setColor(c);
         draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
         for (int i = 0; i < XY.length; i++) {
             if (f[i] > 0) {
+            	draw.setColor(monoColor ? c[0] : c[i]);
                 draw.fillPolygon(f[i], topNW[i], topNE[i], topSE[i], topSW[i]);
                 draw.fillPolygon(f[i], botNW[i], botNE[i], botSE[i], botSW[i]);
 
@@ -153,6 +165,36 @@ public class CloudPlot3D extends Plot {
             cloud2[i][2] = 2 + Math.random() + Math.random();
         }
         p.addCloudPlot("cloud2", Color.RED, cloud2, 3, 3, 3);
+
+        p.setLegendOrientation(PlotPanel.SOUTH);
+        new FrameView(p).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        
+
+        
+        Color[] c = new Color[3 * 3 * 3];
+        for (int i = 0; i < c.length; i++) {
+            c[i] = new Color((int)(Math.random() * 0x1000000));
+        }
+
+        p = new Plot3DPanel();
+
+        //triangular random cloud (as sum of two uniform random numbers)
+        cloud = new double[100][3];
+        for (int i = 0; i < cloud.length; i++) {
+            cloud[i][0] = Math.random() + Math.random();
+            cloud[i][1] = Math.random() + Math.random();
+            cloud[i][2] = Math.random() + Math.random();
+        }
+        p.addCloudPlot("cloud", c, cloud, 3, 3, 3);
+
+        cloud2 = new double[100][3];
+        for (int i = 0; i < cloud.length; i++) {
+            cloud2[i][0] = 2 + Math.random() + Math.random();
+            cloud2[i][1] = 2 + Math.random() + Math.random();
+            cloud2[i][2] = 2 + Math.random() + Math.random();
+        }
+        p.addCloudPlot("cloud2", c, cloud2, 3, 3, 3);
 
         p.setLegendOrientation(PlotPanel.SOUTH);
         new FrameView(p).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

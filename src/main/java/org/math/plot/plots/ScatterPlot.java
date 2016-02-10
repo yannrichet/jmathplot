@@ -20,6 +20,10 @@ public class ScatterPlot extends Plot {
     private String[] tags;
 
     public ScatterPlot(String n, Color c, boolean[][] _pattern, double[][] _XY) {
+        this(n, new Color[] { c }, _pattern, _XY);
+    }
+
+    public ScatterPlot(String n, Color[] c, boolean[][] _pattern, double[][] _XY) {
         super(n, c);
         XY = _XY;
         use_pattern = true;
@@ -27,6 +31,10 @@ public class ScatterPlot extends Plot {
     }
 
     public ScatterPlot(String n, Color c, int _type, int _radius, double[][] _XY) {
+        this(n, new Color[] { c }, _type, _radius, _XY);
+    }
+
+    public ScatterPlot(String n, Color[] c, int _type, int _radius, double[][] _XY) {
         super(n, c);
         XY = _XY;
         use_pattern = false;
@@ -38,12 +46,23 @@ public class ScatterPlot extends Plot {
         this(n, c, AbstractDrawer.ROUND_DOT, AbstractDrawer.DEFAULT_DOT_RADIUS, _XY);
     }
 
-    public void plot(AbstractDrawer draw, Color c) {
+    public ScatterPlot(String n, Color[] c, double[][] _XY) {
+        this(n, c, AbstractDrawer.ROUND_DOT, AbstractDrawer.DEFAULT_DOT_RADIUS, _XY);
+    }
+
+    public void plot(AbstractDrawer draw, Color[] c) {
         if (!visible) {
             return;
         }
+        
+        boolean monoColor = false;
+        if (c.length == 1) {
+        	monoColor = true;
+        }
+        else if (c.length != XY.length) {
+        	throw new IllegalArgumentException("Color array length must match length of data array. ");
+        }
 
-        draw.setColor(c);
         if (use_pattern) {
             draw.setDotType(AbstractDrawer.PATTERN_DOT);
             draw.setDotPattern(pattern);
@@ -57,6 +76,7 @@ public class ScatterPlot extends Plot {
         }
 
         for (int i = 0; i < XY.length; i++) {
+        	draw.setColor(monoColor ? c[0] : c[i]);
             draw.drawDot(XY[i]);
         }
     }
@@ -125,6 +145,36 @@ public class ScatterPlot extends Plot {
             }
             p.addScatterPlot("toto" + i, XYZ);
         }
+        ((ScatterPlot) p.getPlot(0)).setTags(tags);
+
+        p.setLegendOrientation(PlotPanel.SOUTH);
+        new FrameView(p).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+
+		Color[] c = new Color[10];
+        p2 = new Plot2DPanel();
+        double[][] XYZ = new double[10][2];
+        for (int j = 0; j < XYZ.length; j++) {
+            XYZ[j][0] = /*1 + */ Math.random();
+            XYZ[j][1] = /*100 * */ Math.random();
+			c[j] = new Color((int)(Math.random() * 0x1000000));
+        }
+        p2.addScatterPlot("toto", c, XYZ);
+
+        p2.setLegendOrientation(PlotPanel.SOUTH);
+        new FrameView(p2).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        p = new Plot3DPanel();
+        XYZ = new double[10][3];
+        tags = new String[10];
+        for (int j = 0; j < XYZ.length; j++) {
+            XYZ[j][0] = /*1 +*/ 2.5 * Math.random();
+            XYZ[j][1] = /*100 **/ Math.random();
+            XYZ[j][2] = /*0.0001 **/ Math.random();
+            tags[j] = "tags " + j;
+			c[j] = new Color((int)(Math.random() * 0x1000000));
+        }
+        p.addScatterPlot("toto", c, XYZ);
         ((ScatterPlot) p.getPlot(0)).setTags(tags);
 
         p.setLegendOrientation(PlotPanel.SOUTH);

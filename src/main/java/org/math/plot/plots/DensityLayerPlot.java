@@ -45,11 +45,9 @@ public class DensityLayerPlot extends LayerPlot {
 		return axis;
 	}
 
-	public void plot(AbstractDrawer draw, Color c) {
+	public void plot(AbstractDrawer draw, Color[] c) {
 		if (!plot.visible)
 			return;
-
-		draw.setColor(c);
 
 		draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
 		draw.setLineWidth(WIDTH);
@@ -65,10 +63,11 @@ public class DensityLayerPlot extends LayerPlot {
 				double[] d2 = Array.getRowCopy(plot.getData(), i);
 
 				for (int j = 0; j < Q[i].length - 2; j++) {
+					Color c0 = (c.length > 1 ? c[i] : c[0]);
 					d1[axis] = d0[axis] + ((Q[i][j] + Q[i][j + 1]) / 2);
 					d2[axis] = d0[axis] + ((Q[i][j + 1] + Q[i][j + 2]) / 2);
-					Color c1 = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255.0 * (norm / (Q[i][j + 1] - Q[i][j]))));
-					Color c2 = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255.0 * (norm / (Q[i][j + 2] - Q[i][j + 1]))));
+					Color c1 = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255.0 * (norm / (Q[i][j + 1] - Q[i][j]))));
+					Color c2 = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255.0 * (norm / (Q[i][j + 2] - Q[i][j + 1]))));
 					draw.setGradient(d1, c1, d2, c2);
 					draw.drawLine(d1, d2);
 				}
@@ -85,10 +84,11 @@ public class DensityLayerPlot extends LayerPlot {
 				double[] d2 = Array.getRowCopy(plot.getData(), i);
 
 				for (int j = 0; j < constant_Q.length - 2; j++) {
+					Color c0 = (c.length > 1 ? c[i] : c[0]);
 					d1[axis] = d0[axis] + (constant_Q[j] + constant_Q[j + 1]) / 2;
 					d2[axis] = d0[axis] + (constant_Q[j + 1] + constant_Q[j + 2]) / 2;
-					Color c1 = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255.0 * (norm / (constant_Q[j + 1] - constant_Q[j]))));
-					Color c2 = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (255.0 * (norm / (constant_Q[j + 2] - constant_Q[j + 1]))));
+					Color c1 = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255.0 * (norm / (constant_Q[j + 1] - constant_Q[j]))));
+					Color c2 = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), (int) (255.0 * (norm / (constant_Q[j + 2] - constant_Q[j + 1]))));
 					draw.setGradient(d1, c1, d2, c2);
 					draw.drawLine(d1, d2);
 				}
@@ -122,6 +122,22 @@ public class DensityLayerPlot extends LayerPlot {
 		}
 		p2.getPlot(0).addQuantiles(1, new double[] {/*-3,-2,*/-4, -2, -0.5, 0, 0.5, 2, 4 /*,2,3*/});
 		p2.getPlot(1).addQuantiles(1, new double[] { -3, -2, -1, 0, 1, 2, 3 });
+		//p2.getPlot(1).addLayer(new DensityLayerPlot(p2.getPlot(1), 1, new double[] { -.1, 0, .1 }));
+
+		new FrameView(p2).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+
+		Color[] c = new Color[10];
+		p2 = new Plot2DPanel();
+		double[][] XYZ = new double[10][2];
+		for (int j = 0; j < XYZ.length; j++) {
+			XYZ[j][0] = /*1 + */Math.random();
+			XYZ[j][1] = /*100 * */10 * Math.random();
+			c[j] = new Color((int)(Math.random() * 0x1000000));
+		}
+
+		p2.addScatterPlot("toto", c, XYZ);
+		p2.getPlot(0).addQuantiles(1, new double[] {/*-3,-2,*/-4, -2, -0.5, 0, 0.5, 2, 4 /*,2,3*/});
 		//p2.getPlot(1).addLayer(new DensityLayerPlot(p2.getPlot(1), 1, new double[] { -.1, 0, .1 }));
 
 		new FrameView(p2).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

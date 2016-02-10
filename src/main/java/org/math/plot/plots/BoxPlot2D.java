@@ -15,6 +15,10 @@ public class BoxPlot2D extends Plot {
     double[][] XY;
 
     public BoxPlot2D(double[][] _XY, double[][] w, Color c, String n) {
+        this(_XY, w, new Color[] { c }, n);
+    }
+
+    public BoxPlot2D(double[][] _XY, double[][] w, Color[] c, String n) {
         super(n, c);
         XY = _XY;
         widths = w;
@@ -42,14 +46,22 @@ public class BoxPlot2D extends Plot {
 
     }
 
-    public void plot(AbstractDrawer draw, Color c) {
+    public void plot(AbstractDrawer draw, Color[] c) {
         if (!visible) {
             return;
         }
+        
+        boolean monoColor = false;
+        if (c.length == 1) {
+        	monoColor = true;
+        }
+        else if (c.length != XY.length) {
+        	throw new IllegalArgumentException("Color array length must match length of data array. ");
+        }
 
-        draw.setColor(c);
         draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
         for (int i = 0; i < XY.length; i++) {
+        	draw.setColor(monoColor ? c[0] : c[i]);
             draw.drawLine(new double[]{Xmin[i], Ymin[i]}, new double[]{Xmax[i], Ymin[i]});
             draw.drawLine(new double[]{Xmax[i], Ymin[i]}, new double[]{Xmax[i], Ymax[i]});
             draw.drawLine(new double[]{Xmax[i], Ymax[i]}, new double[]{Xmin[i], Ymax[i]});

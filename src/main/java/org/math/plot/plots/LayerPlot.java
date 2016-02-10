@@ -12,7 +12,7 @@ public abstract class LayerPlot extends Plot {
 	Plot plot;
 
 	public LayerPlot(String name, Plot p) {
-		super(name, p.color);
+		super(name, p.colors);
 		plot = p;
 	}
 
