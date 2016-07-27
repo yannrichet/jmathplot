@@ -448,7 +448,9 @@ public class Array {
         for (int j = 0; j < min.length; j++) {
             min[j] = M[0][j];
             for (int i = 1; i < M.length; i++) {
-                min[j] = FastMath.min(min[j], M[i][j]);
+                if (!Double.isNaN(M[i][j])) {
+                    min[j] = FastMath.min(min[j], M[i][j]);
+                }
             }
         }
         return min;
@@ -473,7 +475,9 @@ public class Array {
     public static double min(double... M) {
         double min = M[0];
         for (int i = 1; i < M.length; i++) {
-            min = FastMath.min(min, M[i]);
+            if (!Double.isNaN(M[i])) {
+                min = FastMath.min(min, M[i]);
+            }
         }
         return min;
     }
@@ -483,7 +487,9 @@ public class Array {
         for (int j = 0; j < max.length; j++) {
             max[j] = M[0][j];
             for (int i = 1; i < M.length; i++) {
-                max[j] = FastMath.max(max[j], M[i][j]);
+                if (!Double.isNaN(M[i][j])) {
+                    max[j] = FastMath.max(max[j], M[i][j]);
+                }
             }
         }
         return max;
@@ -492,7 +498,9 @@ public class Array {
     public static double max(double... M) {
         double max = M[0];
         for (int i = 1; i < M.length; i++) {
-            max = FastMath.max(max, M[i]);
+            if (!Double.isNaN(M[i])) {
+                max = FastMath.max(max, M[i]);
+            }
         }
         return max;
     }

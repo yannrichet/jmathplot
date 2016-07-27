@@ -33,9 +33,17 @@ public class LinePlot extends ScatterPlot {
 		draw.setColor(c);
 		draw.setLineType(AbstractDrawer.CONTINOUS_LINE);
 		for (int i = 0; i < XY.length - 1; i++)
+                    if (!anyNaN(XY[i]) && !anyNaN(XY[i+1]))
 			draw.drawLine(XY[i], XY[i + 1]);
 	}
 
+        boolean anyNaN(double[] xy) {
+            for (int i = 0; i < xy.length; i++) {
+                if(Double.isNaN(xy[i])) return true;
+            }
+            return false;
+        }
+        
 	public static void main(String[] args) {
 		Plot2DPanel p2 = new Plot2DPanel();
 
@@ -44,6 +52,7 @@ public class LinePlot extends ScatterPlot {
 				XYZ[j][0] = 2*Math.PI*(double)j/XYZ.length;
 				XYZ[j][1] = Math.sin(XYZ[j][0]);
 			}
+                        XYZ[50][0] = Double.NaN;
 			p2.addLinePlot("sin" , XYZ);
 		
 
