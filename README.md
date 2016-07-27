@@ -43,8 +43,8 @@ Or include maven dependency:
 ...
     <dependency>
       <groupId>com.github.yannrichet</groupId>
-      <artifactId>jmathplot</artifactId>
-      <version>1.0</version>
+      <artifactId>JMathPlot</artifactId>
+      <version>1.0.1</version>
     </dependency>
 ...
 </dependencies>
@@ -54,3 +54,5 @@ Then
 - create a new PlotPanel instance: `PlotPanel plot = new Plot2DPanel();`
 - add a plot inside `plot.addLinePlot("my plot", x, y);`
 - use the PlotPanel as any Swing component (all PlotPanel extends JPanel, in fact) 
+
+![Analytics](https://ga-beacon.appspot.com/UA-109580-20/jmathplot)
