@@ -238,13 +238,15 @@ public class Axis implements Plotable, BaseDependant, Editable {
                                 );
 
 			for (int i = 0; i < lightLabels.length; i=i+inc) {
-        			lightLabels[i].plot(draw);
+                                if(lightLabels[i]!=null)
+        			    lightLabels[i].plot(draw);
                         }
                         
                         draw.setLineType(AbstractDrawer.DOTTED_LINE);
                         for (int i = 0; i < lightLines.length; i++) {
                                  for (int j = base.getAxeScale(index).equalsIgnoreCase(Base.STRINGS) ? 0 : 1; j < lightLines[i].length; j=j+inc) {
-					lightLines[i][j].plot(draw);
+                                     if(lightLines[i][j]!=null)
+				         lightLines[i][j].plot(draw);
 				}
 			}
 		}
