@@ -28,7 +28,9 @@ public abstract class Projection {
         }
         for (int i = 0; i < draw.canvas.base.dimension + 1; i++) {
             // Compute the basis extremity coordinates in the normed-centered screen (ie [-0.5,0.5]x[-0.5,0.5] screen)
-            double[] ratio = baseCoordsScreenProjectionRatio(draw.canvas.base.baseCoords[i]);
+            double[] ratio = new double[]{1,1};
+            if (draw.canvas.base.baseCoords!=null)
+               ratio = baseCoordsScreenProjectionRatio(draw.canvas.base.baseCoords[i]);
             // Compute the basis extremity coordinates in the true screen (ie in px: [0,400]x[0,400])
             baseScreenCoords[i][0] = (int) (draw.canvas.getWidth() * (.5 + (borderCoeff * ratio[0] / totalScreenRatio[0])));
             baseScreenCoords[i][1] = (int) (draw.canvas.getHeight() * (.5 - (borderCoeff * ratio[1] / totalScreenRatio[1])));
@@ -89,7 +91,8 @@ public abstract class Projection {
             if (draw.canvas.base.axesScales[i].equalsIgnoreCase(Base.LOGARITHM)) {
                 normdist_pC_baseCoords = ((FastMath.log(pC[i]) - FastMath.log(draw.canvas.base.baseCoords[0][i])) / (FastMath.log(draw.canvas.base.baseCoords[i + 1][i]) - FastMath.log(draw.canvas.base.baseCoords[0][i])));
             } else if (draw.canvas.base.axesScales[i].equalsIgnoreCase(Base.LINEAR) || draw.canvas.base.axesScales[i].equalsIgnoreCase(Base.STRINGS)) {
-                normdist_pC_baseCoords = ((pC[i] - draw.canvas.base.baseCoords[0][i]) / (draw.canvas.base.baseCoords[i + 1][i] - draw.canvas.base.baseCoords[0][i]));
+                if(pC!=null && draw.canvas.base.baseCoords!=null && draw.canvas.base.baseCoords[i+1] != null)
+                    normdist_pC_baseCoords = ((pC[i] - draw.canvas.base.baseCoords[0][i]) / (draw.canvas.base.baseCoords[i + 1][i] - draw.canvas.base.baseCoords[0][i]));
             }
             sC[0] += normdist_pC_baseCoords * (baseScreenCoords[i + 1][0] - baseScreenCoords[0][0]);
             sC[1] += normdist_pC_baseCoords * (baseScreenCoords[i + 1][1] - baseScreenCoords[0][1]);
