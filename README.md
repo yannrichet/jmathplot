@@ -1,6 +1,8 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.yannrichet/JMathPlot/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.yannrichet/JMathPlot)
+[![Build Status](https://travis-ci.org/yannrichet/jmathplot.png)](https://travis-ci.org/yannrichet/jmathplot)
+[![codecov](https://codecov.io/gh/yannrichet/jmathplot/branch/master/graph/badge.svg)](https://codecov.io/gh/yannrichet/jmathplot)
 
-# JMathPlot: interactive 2D and 3D plots #
+# JMathPlot: interactive 2D and 3D plots
 
 Provides interactive 2D/3D plot (without openGL) :
 
