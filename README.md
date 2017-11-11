@@ -1,3 +1,5 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.yannrichet/JMathPlot/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.yannrichet/JMathPlot)
+
 # JMathPlot: interactive 2D and 3D plots #
 
 Provides interactive 2D/3D plot (without openGL) :
