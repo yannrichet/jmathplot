@@ -6,13 +6,14 @@ import java.security.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
+import javax.imageio.ImageIO;
 
 import org.math.plot.*;
 import org.math.plot.canvas.*;
 
 /**
  * BSD License
- * 
+ *
  * @author Yann RICHET
  */
 public class PlotToolBar extends JToolBar {
@@ -32,7 +33,9 @@ public class PlotToolBar extends JToolBar {
     protected JButton buttonAdjustBounds;
     private boolean denySaveSecurity;
     private JFileChooser pngFileChooser;
-    /** the currently selected PlotPanel */
+    /**
+     * the currently selected PlotPanel
+     */
     private PlotCanvas plotCanvas;
     private PlotPanel plotPanel;
 
@@ -56,157 +59,155 @@ public class PlotToolBar extends JToolBar {
             denySaveSecurity = true;
         }
 
-        buttonGroup = new ButtonGroup();
+        try {
+            buttonGroup = new ButtonGroup();
 
-        buttonCenter = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/center.png")));
-        buttonCenter.setToolTipText("Center axis");
-        buttonCenter.setSelected(plotCanvas.ActionMode == PlotCanvas.TRANSLATION);
+            buttonCenter = new JToggleButton(new ImageIcon(ImageIO.read(PlotPanel.class.getResourceAsStream("icons/center.png"))));
+            buttonCenter.setToolTipText("Center axis");
+            buttonCenter.setSelected(plotCanvas.ActionMode == PlotCanvas.TRANSLATION);
 
-        buttonZoom = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/zoom.png")));
-        buttonZoom.setToolTipText("Zoom");
-        buttonZoom.setSelected(plotCanvas.ActionMode == PlotCanvas.ZOOM);
+            buttonZoom = new JToggleButton(new ImageIcon(ImageIO.read(PlotPanel.class.getResourceAsStream("icons/zoom.png"))));
+            buttonZoom.setToolTipText("Zoom");
+            buttonZoom.setSelected(plotCanvas.ActionMode == PlotCanvas.ZOOM);
 
-        //buttonEdit = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/edit.png")));
-        //buttonEdit.setToolTipText("Edit mode");
+		//buttonEdit = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/edit.png")));
+            //buttonEdit.setToolTipText("Edit mode");
+		//buttonViewCoords = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/position.png")));
+            //buttonViewCoords.setToolTipText("Highlight coordinates / Highlight plot");
+            buttonSetScales = new JButton(new ImageIcon(ImageIO.read(PlotPanel.class.getResourceAsStream("icons/scale.png"))));
+            buttonSetScales.setToolTipText("Edit axis scales");
 
-        //buttonViewCoords = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/position.png")));
-        //buttonViewCoords.setToolTipText("Highlight coordinates / Highlight plot");
+            buttonDatas = new JButton(new ImageIcon(ImageIO.read(PlotPanel.class.getResourceAsStream("icons/data.png"))));
+            buttonDatas.setToolTipText("Get data");
 
-        buttonSetScales = new JButton(new ImageIcon(PlotPanel.class.getResource("icons/scale.png")));
-        buttonSetScales.setToolTipText("Edit axis scales");
+            buttonSavePNGFile = new JButton(new ImageIcon(ImageIO.read(PlotPanel.class.getResourceAsStream("icons/topngfile.png"))));
+            buttonSavePNGFile.setToolTipText("Save graphics in a .PNG File");
 
-        buttonDatas = new JButton(new ImageIcon(PlotPanel.class.getResource("icons/data.png")));
-        buttonDatas.setToolTipText("Get data");
+            buttonReset = new JButton(new ImageIcon(PlotPanel.class.getResource("icons/back.png")));
+            buttonReset.setToolTipText("Reset zoom & axis");
 
-        buttonSavePNGFile = new JButton(new ImageIcon(PlotPanel.class.getResource("icons/topngfile.png")));
-        buttonSavePNGFile.setToolTipText("Save graphics in a .PNG File");
+            buttonAdjustBounds = new JButton(new ImageIcon(ImageIO.read(PlotPanel.class.getResourceAsStream(plotCanvas.getAdjustBounds() ? "icons/adjustbounds.png" : "icons/noadjustbounds.png"))));
+            buttonAdjustBounds.setToolTipText("Auto-update/fix bounds");
 
-        buttonReset = new JButton(new ImageIcon(PlotPanel.class.getResource("icons/back.png")));
-        buttonReset.setToolTipText("Reset zoom & axis");
-
-        buttonAdjustBounds = new JButton(new ImageIcon(PlotPanel.class.getResource(plotCanvas.getAdjustBounds() ? "icons/adjustbounds.png" : "icons/noadjustbounds.png")));
-        buttonAdjustBounds.setToolTipText("Auto-update/fix bounds");
-
-        /*buttonEdit.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-        plotCanvas.ActionMode = PlotCanvas.EDIT;
-        }
-        });*/
-
-        buttonZoom.setSelected(true);
-        buttonZoom.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                plotCanvas.ActionMode = PlotCanvas.ZOOM;
-            }
-        });
-
-        buttonCenter.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                plotCanvas.ActionMode = PlotCanvas.TRANSLATION;
-            }
-        });
-
-        /*buttonViewCoords.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-        plotCanvas.setNoteCoords(buttonViewCoords.isSelected());
-        }
-        });*/
-
-        buttonSetScales.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                plotCanvas.displayScalesFrame();
-            }
-        });
-
-        buttonDatas.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                plotCanvas.displayDataFrame();
-            }
-        });
-
-        buttonSavePNGFile.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                choosePNGFile();
-            }
-        });
-
-        buttonReset.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                plotCanvas.resetBase();
-            }
-        });
-
-        buttonAdjustBounds.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                plotCanvas.setAdjustBounds(!plotCanvas.getAdjustBounds());
-                ajustBoundsChanged();
-            }
-        });
-
-        buttonGroup.add(buttonCenter);
-        buttonGroup.add(buttonZoom);
-        //buttonGroup.add(buttonEdit);
-
-        add(buttonCenter, null);
-        add(buttonZoom, null);
-        add(buttonReset, null);
-        //add(buttonViewCoords, null);
-        add(buttonSetScales, null);
-        if (adjustBoundsVisible) {
-            add(buttonAdjustBounds, null);
-        }
-        //add(buttonEdit, null);
-        add(buttonSavePNGFile, null);
-        add(buttonDatas, null);
-
-        if (!denySaveSecurity) {
-            pngFileChooser.addActionListener(new ActionListener() {
+            /*buttonEdit.addActionListener(new ActionListener() {
+             public void actionPerformed(ActionEvent e) {
+             plotCanvas.ActionMode = PlotCanvas.EDIT;
+             }
+             });*/
+            buttonZoom.setSelected(true);
+            buttonZoom.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    saveGraphicFile();
-                }
-            });
-        } else {
-            buttonSavePNGFile.setEnabled(false);
-        }
-
-        //buttonEdit.setEnabled(plotCanvas.getEditable());
-
-        //buttonViewCoords.setEnabled(plotCanvas.getNotable());
-
-        // allow mixed (2D/3D) plots managed by one toolbar
-        if (plotCanvas instanceof Plot3DCanvas) {
-            if (buttonRotate == null) {
-                buttonRotate = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/rotation.png")));
-                buttonRotate.setToolTipText("Rotate axes");
-
-                buttonRotate.addActionListener(new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        plotCanvas.ActionMode = Plot3DCanvas.ROTATION;
-                    }
-                });
-                buttonGroup.add(buttonRotate);
-                add(buttonRotate, null, 2);
-                buttonRotate.setSelected(plotCanvas.ActionMode == Plot3DCanvas.ROTATION);
-            } else {
-                buttonRotate.setEnabled(true);
-            }
-        } else {
-            if (buttonRotate != null) {
-                // no removal/disabling just disable
-                if (plotCanvas.ActionMode == Plot3DCanvas.ROTATION) {
                     plotCanvas.ActionMode = PlotCanvas.ZOOM;
                 }
-                buttonRotate.setEnabled(false);
+            });
+
+            buttonCenter.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    plotCanvas.ActionMode = PlotCanvas.TRANSLATION;
+                }
+            });
+
+            /*buttonViewCoords.addActionListener(new ActionListener() {
+             public void actionPerformed(ActionEvent e) {
+             plotCanvas.setNoteCoords(buttonViewCoords.isSelected());
+             }
+             });*/
+            buttonSetScales.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    plotCanvas.displayScalesFrame();
+                }
+            });
+
+            buttonDatas.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    plotCanvas.displayDataFrame();
+                }
+            });
+
+            buttonSavePNGFile.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    choosePNGFile();
+                }
+            });
+
+            buttonReset.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    plotCanvas.resetBase();
+                }
+            });
+
+            buttonAdjustBounds.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    plotCanvas.setAdjustBounds(!plotCanvas.getAdjustBounds());
+                    ajustBoundsChanged();
+                }
+            });
+
+            buttonGroup.add(buttonCenter);
+            buttonGroup.add(buttonZoom);
+            //buttonGroup.add(buttonEdit);
+
+            add(buttonCenter, null);
+            add(buttonZoom, null);
+            add(buttonReset, null);
+            //add(buttonViewCoords, null);
+            add(buttonSetScales, null);
+            if (adjustBoundsVisible) {
+                add(buttonAdjustBounds, null);
             }
+            //add(buttonEdit, null);
+            add(buttonSavePNGFile, null);
+            add(buttonDatas, null);
+
+            if (!denySaveSecurity) {
+                pngFileChooser.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        saveGraphicFile();
+                    }
+                });
+            } else {
+                buttonSavePNGFile.setEnabled(false);
+            }
+
+		//buttonEdit.setEnabled(plotCanvas.getEditable());
+		//buttonViewCoords.setEnabled(plotCanvas.getNotable());
+            // allow mixed (2D/3D) plots managed by one toolbar
+            if (plotCanvas instanceof Plot3DCanvas) {
+                if (buttonRotate == null) {
+                    buttonRotate = new JToggleButton(new ImageIcon(ImageIO.read(PlotPanel.class.getResourceAsStream("icons/rotation.png"))));
+                    buttonRotate.setToolTipText("Rotate axes");
+
+                    buttonRotate.addActionListener(new ActionListener() {
+
+                        public void actionPerformed(ActionEvent e) {
+                            plotCanvas.ActionMode = Plot3DCanvas.ROTATION;
+                        }
+                    });
+                    buttonGroup.add(buttonRotate);
+                    add(buttonRotate, null, 2);
+                    buttonRotate.setSelected(plotCanvas.ActionMode == Plot3DCanvas.ROTATION);
+                } else {
+                    buttonRotate.setEnabled(true);
+                }
+            } else {
+                if (buttonRotate != null) {
+                    // no removal/disabling just disable
+                    if (plotCanvas.ActionMode == Plot3DCanvas.ROTATION) {
+                        plotCanvas.ActionMode = PlotCanvas.ZOOM;
+                    }
+                    buttonRotate.setEnabled(false);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -237,6 +238,10 @@ public class PlotToolBar extends JToolBar {
     }
 
     public void ajustBoundsChanged() {
-        buttonAdjustBounds.setIcon(new ImageIcon(PlotPanel.class.getResource(plotCanvas.getAdjustBounds() ? "icons/adjustbounds.png" : "icons/noadjustbounds.png")));
+        try {
+            buttonAdjustBounds.setIcon(new ImageIcon(ImageIO.read(PlotPanel.class.getResourceAsStream(plotCanvas.getAdjustBounds() ? "icons/adjustbounds.png" : "icons/noadjustbounds.png"))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
