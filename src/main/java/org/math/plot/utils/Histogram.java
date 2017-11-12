@@ -26,9 +26,10 @@ public class Histogram {
 		double[] h = new double[bounds.length - 1];
 		for (int i = 0; i < values.length; i++) {
 			for (int j = 0; j < h.length; j++) {
-				if (((bounds[j + 1] - values[i]) * (bounds[j] - values[i]) <= 0) || ((bounds[j] == values[i])))
+				if (((bounds[j + 1] - values[i]) * (bounds[j] - values[i]) <= 0) || ((bounds[j] == values[i]))) {
 					h[j]++;
 					break;
+				}
 			}
 		}
 		return h;
