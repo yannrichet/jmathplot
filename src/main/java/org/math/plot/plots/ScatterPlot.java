@@ -1,163 +1,210 @@
-package org.math.plot.plots;
 
+import java.io.*;
+import java.lang.*;
 import java.awt.*;
-
+import java.awt.event.*;
+import java.awt.geom.*;
 import javax.swing.*;
-
+import java.util.Scanner;        
+import java.text.DecimalFormat;  
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;  
 import org.math.plot.*;
-import org.math.plot.canvas.PlotCanvas;
-import org.math.plot.render.*;
-import org.math.plot.utils.Array;
-import org.math.plot.utils.FastMath;
+import org.math.plot.plotObjects.*;
+import java.util.Arrays;
 
-public class ScatterPlot extends Plot {
 
-    private int type;
-    private int radius;
-    private boolean[][] pattern;
-    private boolean use_pattern;
-    double[][] XY;
-    private String[] tags;
+public class magneticPendulumStudents
+{
+	//constants
+    public static final double DT = 1.e-3;    					//	time interval in s
+    public static final double Tmax = 50.;   					//	max time in s
+	public static final double mass = 0.1; 						//	mass of the stone
+	public static final double cLift = 10; 						//	coefficient of lift
+	public static final double cFriction = 1; 					//	coefficient of friction
+	public static final double rAir = 1.225; 					//	density of air
+	public static final double rWater = 1000; 					//	desity of water
+	public static final double cDrag =  0.5;					//	coefficient of drag
+	public static final double gravity = 9.8;					//	gravity
+	public static final double radius = 0.04;					//	radius of stone
+	public static final double height = 0.01;					// 	height of stone
+	public static final double aStone = 2 * Math.PI * radius * radius + 2 * Math.PI * height;  		// area of stone
+    // Start main method
+    public static void main(String[] args)
+    {
 
-    public ScatterPlot(String n, Color c, boolean[][] _pattern, double[][] _XY) {
-        super(n, c);
-        XY = _XY;
-        use_pattern = true;
-        pattern = _pattern;
+		double xInitial, yInitial;
+
+		xInitial = 0.;
+		yInitial = 1.5;
+
+		// Calculate length of arrays
+		int imax = (int)(Tmax/DT);					// Maximal index
+
+		// Declare main variables
+		double[] t = new double[imax];				// time in sec
+
+		double[] x1 = new double[imax];  			// x-position in m
+		double[] vx1 = new double[imax];			// x-velocity in m/s
+		double[] ax1 = new double[imax];			// x-acceleration in m/s/s
+
+		double[] y1 = new double[imax];				// y-position in m
+		double[] vy1 = new double[imax];			// y-velocity in m/s
+		double[] ay1 = new double[imax];			// y-acceleration in m/s/s
+		
+		double[] speed = new double[imax];			// velocity in m/s 
+		double[] angleBeta = new double[imax];  	// angle of attack
+
+
+		// Initialize the first step in time;
+		t[0] = 0;
+
+		x1[0] = xInitial;
+		y1[0] = yInitial;
+
+		vx1[0] = 20.;
+		vy1[0] = -2.;
+		speed[0] = Math.sqrt(vx1[0] * vx1[0] + vy1[0] * vy1[0]);
+		angleBeta[0] = Math.atan(vy1[0]/vx1[0]);
+
+		ax1[0] = accelerationx1(angleBeta[0],speed[0]);
+		ay1[0] = accelerationy1(angleBeta[0],speed[0]);
+
+		x1[1] = x1[0] + vx1[0]*DT + 1/2 * ax1[0] * DT * DT;
+		vx1[1] = vx1[0]+ax1[0]*DT;
+		y1[1] = y1[0] + vy1[0]*DT + 1/2 * ay1[0] * DT * DT;
+		vy1[1] = vy1[0]+ay1[0]*DT;
+		
+		angleBeta[1] = Math.atan(vy1[1]/vx1[1]);
+		speed[0] = Math.sqrt(vx1[1] * vx1[1] + vy1[1] * vy1[1]);
+		
+		ax1[1] = accelerationx1(angleBeta[1],speed[1]);
+		ay1[1] = accelerationy1(angleBeta[1],speed[1]);
+
+		
+		for(int i = 2; i < imax;i++)
+		{
+			if (vx1[i-1] < 0.){
+				System.out.println("rock has stopped moving");
+				System.out.println(i * DT);
+				double[] xRealPosition = new double[i];
+				double[] yRealPosition = new double[i];
+
+				xRealPosition = Arrays.copyOfRange(x1, 0, i);
+				yRealPosition = Arrays.copyOfRange(y1, 0, i);
+
+				Plot2DPanel myPlot = new Plot2DPanel();
+
+   				myPlot.addLinePlot("trajectory", Color.RED, xRealPosition, yRealPosition);
+   				new FrameView(myPlot).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+   				while(true){
+   					// do nothing;
+   				}
+
+				//System.exit(0);
+			}
+			else{
+			//System.out.println("X Speed : " + vx)
+
+			if (y1[i-1] > 0){
+			x1[i] = x1[i-1] + vx1[i-1] * DT + 1/2 * ax1[i-1] * DT * DT;
+			y1[i] = y1[i-1] + vy1[i-1] * DT + 1/2 * ay1[i-1] * DT * DT;
+
+			// Update velocity
+
+			vx1[i] = vx1[i-1] + ax1[i-1]*DT; 
+			vy1[i] = vy1[i-1] + ay1[i-1] * DT; 
+
+			angleBeta[i] = Math.atan(vy1[i]/vx1[i]);
+			speed[i] = Math.sqrt(vx1[i] * vx1[i] + vy1[i] * vy1[i]);
+
+			// Update acceleration
+			ax1[i] = accelerationx1(angleBeta[i],speed[i]);
+			ay1[i] = accelerationy1(angleBeta[i],speed[i]);
+						
+			//System.out.println("x position: " + x1[i]);
+			//System.out.println("y position:" + y1[i]);
+			//System.out.println("x speed:" + vx1[i]);
+			//System.out.println("y speed:" + vy1[i]);
+			}
+			else 
+			{
+			//System.out.println("rock is below");
+			x1[i] = x1[i-1] + vx1[i-1] * DT + 1/2 * ax1[i-1]*DT*DT ;
+			y1[i] = y1[i-1] + vy1[i-1] * DT + 1/2 * ay1[i-1] * DT * DT;
+
+			// Update velocity
+
+			vx1[i] = vx1[i-1] + ax1[i-1] * DT; 
+			vy1[i] = vy1[i-1] + ay1[i-1] * DT; 
+
+
+			angleBeta[i] = Math.atan(vy1[i]/vx1[i]);
+			speed[i] = Math.sqrt(vx1[i] * vx1[i] + vy1[i] * vy1[i]);
+
+			// Update acceleration
+			ax1[i] = accelerationx2(0.3,speed[i],y1[i]);
+			ay1[i] = accelerationy2(0.3,speed[i],y1[i]);
+						
+			//System.out.println("x position: " + x1[i]);
+			//System.out.println("y position:" + y1[i]);
+			//System.out.println("x speed:" + vx1[i]);
+			//System.out.println("y speed:" + vy1[i]);
+			}
+		}
+
+	}
+
+
+} // end main
+
+    public static double accelerationx1(double angleBeta, double speed)
+    {
+		double accx;
+		
+		accx = (-1 * cDrag * rAir * speed * speed * aStone * Math.cos(angleBeta))/(2 * mass);
+		
+		return accx;
+    }
+	
+	public static double accelerationx2(double angleTheta, double speed, double height)
+    {
+		double accx;
+		double shortcut = (1 - Math.abs(height)/(radius * Math.sin(angleTheta)));
+		double aStoneSubmerged = radius * radius * (Math.acos(shortcut) - shortcut * Math.sqrt(1 - shortcut * shortcut));
+		accx = -1 * ((cLift * Math.sin(angleTheta) + cFriction * Math.cos(angleTheta)) * rWater * speed * speed * aStoneSubmerged)/(2 * mass);
+		//System.out.println("x acceleration 2:" + accx);
+
+		return accx;
     }
 
-    public ScatterPlot(String n, Color c, int _type, int _radius, double[][] _XY) {
-        super(n, c);
-        XY = _XY;
-        use_pattern = false;
-        type = _type;
-        radius = _radius;
+
+    public static double accelerationy1(double angleBeta, double speed)
+    {
+		double accy;
+		
+		accy = -1 * gravity * mass + (-1 * cDrag * rAir * speed * speed * aStone * Math.sin(angleBeta))/(2 * mass);
+		
+		return accy;
     }
+	
+	///////////////////////////////////////////////////////////////////////////////////
+    public static double accelerationy2(double angleTheta, double speed, double height)
+    {
+    	//System.out.println("speed: " + speed);
+		double accy;
+		double shortcut = (1 - Math.abs(height)/(radius * Math.sin(angleTheta)));
+		//System.out.println("shortcut: " + shortcut);
+		double aStoneSubmerged = radius * radius * (Math.acos(shortcut) - shortcut * Math.sqrt(1 - shortcut * shortcut));
+		double stuff = ((cLift * Math.cos(angleTheta) + cFriction * Math.sin(angleTheta)) * rWater * speed * speed * aStoneSubmerged)/(2 * mass);
+		accy = gravity + stuff;
+		/*System.out.println("stuff: " + stuff);
+		System.out.println("y acceleration 2:" + accy);
+		System.out.println("area stone submerged:" + aStoneSubmerged);
+		*/
 
-    public ScatterPlot(String n, Color c, double[][] _XY) {
-        this(n, c, AbstractDrawer.ROUND_DOT, AbstractDrawer.DEFAULT_DOT_RADIUS, _XY);
+
+		return accy;
     }
-
-    public void plot(AbstractDrawer draw, Color c) {
-        if (!visible) {
-            return;
-        }
-
-        draw.setColor(c);
-        if (use_pattern) {
-            draw.setDotType(AbstractDrawer.PATTERN_DOT);
-            draw.setDotPattern(pattern);
-        } else {
-            draw.setDotRadius(radius);
-            if (type == AbstractDrawer.CROSS_DOT) {
-                draw.setDotType(AbstractDrawer.CROSS_DOT);
-            } else {
-                draw.setDotType(AbstractDrawer.ROUND_DOT);
-            }
-        }
-
-        for (int i = 0; i < XY.length; i++) {
-            draw.drawDot(XY[i]);
-        }
-    }
-
-    public void setDotPattern(int t) {
-        type = t;
-        use_pattern = false;
-    }
-
-    public void setDotPattern(boolean[][] t) {
-        use_pattern = true;
-        pattern = t;
-    }
-
-    @Override
-    public void setData(double[][] d) {
-        datapanel = null;
-        XY = d;
-    }
-
-    @Override
-    public double[][] getData() {
-        return XY;
-    }
-
-    @Override
-    public double[][] getBounds() {
-        return Array.mergeRows(Array.min(XY), Array.max(XY));
-    }
-
-    public double[] isSelected(int[] screenCoordTest, AbstractDrawer draw) {
-        for (int i = 0; i < XY.length; i++) {
-            int[] screenCoord = draw.project(XY[i]);
-
-            if (FastMath.abs(screenCoord[0] - screenCoordTest[0]) < note_precision && FastMath.abs(screenCoord[1] - screenCoordTest[1]) < note_precision) {
-                return XY[i];
-            }
-        }
-        return null;
-    }
-
-    public static void main(String[] args) {
-        Plot2DPanel p2 = new Plot2DPanel();
-        for (int i = 0; i < 3; i++) {
-            double[][] XYZ = new double[10][2];
-            for (int j = 0; j < XYZ.length; j++) {
-                XYZ[j][0] = /*1 + */ Math.random();
-                XYZ[j][1] = /*100 * */ Math.random();
-            }
-            p2.addScatterPlot("toto" + i, XYZ);
-        }
-
-        p2.setLegendOrientation(PlotPanel.SOUTH);
-        new FrameView(p2).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        Plot3DPanel p = new Plot3DPanel();
-        String[] tags = null;
-        for (int i = 0; i < 3; i++) {
-            double[][] XYZ = new double[10][3];
-            tags = new String[10];
-            for (int j = 0; j < XYZ.length; j++) {
-                XYZ[j][0] = /*1 +*/ 2.5 * Math.random();
-                XYZ[j][1] = /*100 **/ Math.random();
-                XYZ[j][2] = /*0.0001 **/ Math.random();
-                tags[j] = "tags " + j;
-            }
-            p.addScatterPlot("toto" + i, XYZ);
-        }
-        ((ScatterPlot) p.getPlot(0)).setTags(tags);
-
-        p.setLegendOrientation(PlotPanel.SOUTH);
-        new FrameView(p).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    /**
-     * @param tags the tags to set
-     */
-    public void setTags(String[] tags) {
-        datapanel = null;
-        this.tags = tags;
-    }
-
-    @Override
-    public void noteCoord(AbstractDrawer draw, double[] coordNoted) {
-        if (coordNoted == null) {
-            return;
-        }
-
-        if (tags == null) {
-            super.noteCoord(draw, coordNoted);
-        } else {
-            draw.setColor(PlotCanvas.NOTE_COLOR);
-            for (int i = 0; i < XY.length; i++) {
-                if (tags.length > i) {
-                    if (Array.equals(XY[i], coordNoted)) {
-                        draw.drawShadowedText(tags[i], .5f, coordNoted);
-                    }
-                }
-            }
-        }
-        //draw.drawCoordinate(coordNoted);
-        //draw.drawText(Array.cat(draw.canvas.reverseMapedData(coordNoted)), coordNoted);
-    }
-}
+} 
