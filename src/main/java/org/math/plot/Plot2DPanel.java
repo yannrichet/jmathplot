@@ -381,21 +381,22 @@ public class Plot2DPanel extends PlotPanel {
     }
     
     @Override
-    public int addPlot(String type, String name, Color color, double[]... XY) {
-        if (type.equalsIgnoreCase(SCATTER)) {
-            return addScatterPlot(name, color, XY);
-        } else if (type.equalsIgnoreCase(LINE)) {
-            return addLinePlot(name, color, XY);
-        } else if (type.equalsIgnoreCase(BAR)) {
-            return addBarPlot(name, color, XY);
-        } else if (type.equalsIgnoreCase(STAIRCASE)) {
-            return addStaircasePlot(name, color, XY);
-        } else if (type.equalsIgnoreCase(HISTOGRAM)) {
-            return addHistogramPlot(name, color, XY);
-        } else if (type.equalsIgnoreCase(BOX)) {
-            return addBoxPlot(name, color, XY);
-        } else {
-            throw new IllegalArgumentException("Plot type is unknown : " + type);
+    public int addPlot(Type type, String name, Color color, double[]... XY) {
+        switch ( type ) {
+            case SCATTER:
+                return addScatterPlot(name, color, XY);
+            case LINE:
+                return addLinePlot(name, color, XY);
+            case BAR:
+                return addBarPlot(name, color, XY);
+            case STAIRCASE:
+                return addStaircasePlot(name, color, XY);
+            case HISTOGRAM:
+                return addHistogramPlot(name, color, XY);
+            case BOX:
+                return addBoxPlot(name, color, XY);
+            default:
+                throw new IllegalArgumentException("Plot type is unknown : " + type);
         }
     }
     

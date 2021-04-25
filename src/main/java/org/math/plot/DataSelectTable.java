@@ -626,12 +626,12 @@ public class DataSelectTable extends JPanel {
 				pp.setAxisLabel(2, getSelectedZAxis());
 
 				if (pp.getPlots().size() == 0)
-					pp.addPlot("SCATTER", "data", pp.mapData(getSelectedProjectedData()));
+					pp.addPlot(PlotPanel.Type.SCATTER, "data", pp.mapData(getSelectedProjectedData()));
 				else {
 					if (from.endsWith("axis")) {
 						pp.resetMapData();
 						pp.removeAllPlots();
-						pp.addPlot("SCATTER", "data", pp.mapData(getSelectedProjectedData()));
+						pp.addPlot(PlotPanel.Type.SCATTER, "data", pp.mapData(getSelectedProjectedData()));
 					} else
 						pp.getPlot(0).setData(pp.mapData(getSelectedProjectedData()));
 				}
